@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-scraper-policy
+  namespace: monitoring
+  annotations:
+    description: "Restricts ingress to Prometheus scraper pods"
+spec:
+  podSelector:
+    matchLabels:
+      app: Prometheus
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: metrics-consumer

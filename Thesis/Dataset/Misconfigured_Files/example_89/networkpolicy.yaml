@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: envoy-isolation-policy
+  namespace: gateway
+  annotations:
+    description: "Restricts ingress to stable version Envoy gateway pods only"
+spec:
+  podSelector:
+    matchLabels:
+      app: envoy
+      version: stable
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: load-balancer
+    ports:
+    - protocol: TCP
+      port: 10000

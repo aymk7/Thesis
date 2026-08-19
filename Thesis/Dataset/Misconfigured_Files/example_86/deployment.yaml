@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solr
+  namespace: search
+  annotations:
+    description: "Apache Solr search platform for full-text search indexing"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solr
+  template:
+    metadata:
+      labels:
+        app: solr
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: solr
+        image: solr:9.3
+        ports:
+        - containerPort: 8983
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

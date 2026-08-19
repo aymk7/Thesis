@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-api
+  namespace: payments
+  annotations:
+    description: "Payment API service - carries both app and env labels matching the NetworkPolicy selector"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-api
+      env: production
+  template:
+    metadata:
+      labels:
+        app: payment-api
+        env: production
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: payment-api
+        image: python:3.11.0
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"

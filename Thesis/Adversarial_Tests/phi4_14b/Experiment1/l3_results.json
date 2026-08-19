@@ -1,0 +1,62 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "RBAC misconfiguration with unauthenticated access",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role 'dev-pod-exec' grants permissions to execute commands in pods, view logs, and list pods within the 'development' namespace. The RoleBinding 'dev-pod-exec-binding' assigns these permissions to the unauthenticated user group ('system:unauthenticated'). This configuration allows unauthenticated users to perform potentially sensitive operations such as executing commands inside development environment pods, which could lead to unauthorized access or data exposure in a production-like setting.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions in RBAC role",
+    "relevant_files": [
+      "role.yaml",
+      "deployment.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role 'webapp-nginx-role' grants the service account 'webapp-nginx-sa' excessive permissions, including 'create', 'update', and 'delete' operations on pods and deployments. These permissions are not necessary for a web server workload like Nginx, which typically only needs to read resources or possibly create logs. The RoleBinding binds these excessive permissions to the service account used by the Deployment, potentially allowing unintended modifications to critical cluster resources.",
+    "injection_target": "role.yaml"
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "NetworkPolicy selector mismatch with Deployment labels",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The NetworkPolicy 'payment-api-policy' in the 'payments' namespace is configured to apply to pods labeled with both 'app: payment-api' and 'env: production'. However, the Deployment 'payment-api' does not include the 'env: production' label. This mismatch means that the intended network restrictions will not be applied to the actual running pods of the 'payment-api', potentially leaving them exposed or improperly restricted.",
+    "injection_target": "networkpolicy.yaml"
+  },
+  "example_33": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The configuration grants the API gateway service account ('api-gateway-sa') in the 'webapp' namespace the ability to impersonate users and access userextras, as well as list service accounts. However, there is no indication that this role or service account has permissions beyond what is necessary for its described function of delegated authentication flows. The cluster-admin binding for 'platform-admin' does not interact with or affect the API gateway's permissions in a way that introduces additional risk. Therefore, based on the provided files and their explicit contents, there are no cross-resource misconfigurations present.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "unnecessary secret access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment manifest specifies that the Graphite exporter does not require credentials or secrets for its current runtime behavior. However, a Role and RoleBinding are configured to grant the service account 'redis-exporter-sa' read access to secrets in the 'redis' namespace. This permission is unnecessary given the stated requirements of the workload and poses a potential security risk by allowing access to sensitive information that is not needed for its operation.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions due to lack of namespace restriction",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-ingress-manager' grants broad permissions on the 'ingresses' resource across all namespaces, which is not restricted by any namespace selector. The ClusterRoleBinding binds this role to a user named 'api-routing-admin'. Although there's an annotation mentioning that access is intended to be limited to the 'api' namespace via an external admission webhook (NET-582), this restriction is enforced out-of-band and not within Kubernetes itself. This reliance on external mechanisms for enforcing namespace restrictions introduces a security risk, as it allows the user potentially broader permissions than intended if the webhook fails or is bypassed.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

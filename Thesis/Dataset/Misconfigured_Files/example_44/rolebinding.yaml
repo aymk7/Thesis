@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: memcached-secret-reader-binding
+  namespace: caching
+  annotations:
+    description: "Binds the secret reader role to the Memcached service account"
+subjects:
+- kind: ServiceAccount
+  name: memcached-sa
+  namespace: caching
+roleRef:
+  kind: Role
+  name: caching-secret-reader
+  apiGroup: rbac.authorization.k8s.io

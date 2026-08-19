@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: api-networkpolicy-manager
+  namespace: api
+  annotations:
+    description: "Manages NetworkPolicy resources for the API namespace"
+rules:
+- apiGroups: ["networking.k8s.io"]
+  resources: ["networkpolicies"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]

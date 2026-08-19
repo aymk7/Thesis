@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: monitoring-configmap-reader-binding
+  annotations:
+    description: "Binds the monitoring configmap reader role to the monitoring team group"
+subjects:
+- kind: Group
+  name: monitoring-team
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: monitoring-configmap-reader
+  apiGroup: rbac.authorization.k8s.io

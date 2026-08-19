@@ -1,0 +1,51 @@
+{
+  "example_32": {
+    "verdict": "misconfigured",
+    "category": "RBAC privilege escalation",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml",
+      "target_role.yaml"
+    ],
+    "justification": "The Role 'monitoring-role-manager' in the monitoring namespace has the verb 'escalate', which is not a standard Kubernetes verb and could be indicative of custom logic that allows privilege escalation. This role is bound to the service account 'prometheus-sa'. Additionally, there is another Role 'monitoring-namespace-admin' that grants full administrative access within the same namespace. If the 'escalate' verb is misused or exploited, it could potentially allow the 'prometheus-sa' to gain administrative privileges.",
+    "injection_target": "role.yaml"
+  },
+  "example_35": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_50": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "deployment.yaml"
+  },
+  "example_91": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The cluster role 'rolebinding-manager' does not grant permissions to bind to the specific RoleBinding 'namespace-admin-binding'. The OPA Gatekeeper policy mentioned in the annotations of the ClusterRole effectively blocks any escalation path involving binding to 'namespace-admin-binding'.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_103": {
+    "verdict": "misconfigured",
+    "category": "RBAC misconfiguration",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'monitoring-configmap-reader' is intended to grant read-only access to configmaps within the monitoring namespace only, but it is bound cluster-wide via a ClusterRoleBinding. This means that members of the 'monitoring-team' group have read-only access to all configmaps in the entire cluster, not just within the monitoring namespace.",
+    "injection_target": "clusterrolebinding.yaml"
+  },
+  "example_109": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

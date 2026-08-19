@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-pipeline
+  namespace: pipeline
+  annotations:
+    description: "Data pipeline orchestrator in the pipeline namespace processing raw data from external sources including user-submitted datasets, not a trusted consumer of proprietary ML models and should not have access to the model serving API"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: data-pipeline
+  template:
+    metadata:
+      labels:
+        app: data-pipeline
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: pipeline
+        image: apache/airflow:2.7.0
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

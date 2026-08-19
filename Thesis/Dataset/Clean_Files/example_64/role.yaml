@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: grafana-configmap-reader
+  namespace: monitoring
+  annotations:
+    description: "Grants Grafana read access to its own dashboard and datasource configmaps only"
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]
+  resourceNames: ["grafana-dashboards", "grafana-datasources"]

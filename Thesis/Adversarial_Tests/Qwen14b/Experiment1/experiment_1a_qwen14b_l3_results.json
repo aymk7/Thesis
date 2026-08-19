@@ -1,0 +1,61 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "Unrestricted access to development namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The RoleBinding grants the 'system:unauthenticated' group full exec, log, and pod access in the development namespace. This allows any unauthenticated user to execute commands inside pods, read logs, and potentially gain sensitive information or control over the environment.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "Excessive Pod Management Permissions",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The RoleBinding binds the 'webapp-nginx-sa' ServiceAccount to a Role that grants excessive permissions on Pods, Deployments, and Services. Specifically, the Role allows verbs like 'create', 'update', and 'delete' for Pods which are not typically required by an Nginx web server deployment. This could allow the service account to create or manipulate other pods in the namespace beyond its intended scope.",
+    "injection_target": "role.yaml"
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "Inconsistent Network Policy Application",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml file does not include the 'env' label in the pod's metadata, while the networkpolicy.yaml file applies a NetworkPolicy to pods with both 'app: payment-api' and 'env: production'. This means that if there are any payment-api pods without the 'env: production' label (e.g., during development or testing), they will not be subject to this network policy despite being part of the same deployment. This inconsistency can lead to security vulnerabilities by allowing unintended access to these pods.",
+    "injection_target": "networkpolicy.yaml"
+  },
+  "example_33": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The provided manifest files do not contain any cross-resource misconfigurations. The ClusterRole and ClusterRoleBinding for the API gateway service account are properly scoped to allow impersonation as required, without granting excessive permissions. Additionally, a separate ClusterRoleBinding grants cluster-admin privileges to a platform administrator user, which is distinct from the API gateway's role and does not create any security weaknesses through interaction with other resources.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary Secret Access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml file describes a Prometheus Graphite exporter that does not require credentials or secrets for its operation. However, the role.yaml and rolebinding.yaml files grant read access to all secrets in the redis namespace to the service account associated with this deployment (redis-exporter-sa). This permission is unnecessary given the description of the application's requirements and represents a potential security risk.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "Cluster-wide RBAC scope without namespace restriction",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-ingress-manager' grants cluster-wide permissions for ingresses, which is intended to be restricted to the 'api' namespace. However, there is no explicit namespace restriction in the ClusterRole definition or binding. The annotations mention an external admission webhook (NET-582) that should enforce this restriction, but relying on out-of-band enforcement without clear in-cluster configuration can lead to security issues if the webhook fails.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

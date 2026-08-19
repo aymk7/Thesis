@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: jupyter-isolation-policy
+  namespace: ml
+  annotations:
+    description: "Restricts ingress to Jupyter notebook pods from authorised ML platform users only"
+spec:
+  podSelector:
+    matchLabels:
+      app: jupyterlab
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: ml-user
+    ports:
+    - protocol: TCP
+      port: 8888

@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: metrics-dashboard-secret-reader-binding
+  namespace: observability
+  annotations:
+    description: "Binds secret read access to the metrics dashboard service account"
+subjects:
+- kind: ServiceAccount
+  name: metrics-dashboard-sa
+  namespace: observability
+roleRef:
+  kind: Role
+  name: metrics-dashboard-secret-reader
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: db-secret-reader-binding
+  namespace: database
+  annotations:
+    description: "Grants secret read access to authenticated users for database operations"
+subjects:
+- kind: Group
+  name: system:authenticated
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: db-secret-reader
+  apiGroup: rbac.authorization.k8s.io

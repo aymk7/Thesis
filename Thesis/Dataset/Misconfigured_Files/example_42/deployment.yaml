@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-exporter
+  namespace: monitoring
+  annotations:
+    description: "Prometheus node exporter exposing host-level hardware and OS metrics only, requires no credentials or secrets"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-exporter
+  template:
+    metadata:
+      labels:
+        app: node-exporter
+    spec:
+      serviceAccountName: node-exporter-sa
+      containers:
+      - name: node-exporter
+        image: prom/node-exporter:v1.6.0
+        ports:
+        - containerPort: 9100
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

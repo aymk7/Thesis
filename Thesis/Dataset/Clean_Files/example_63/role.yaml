@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: sidecar-endpoint-reader
+  namespace: mesh
+  annotations:
+    description: "Grants read-only access to endpoints in the mesh namespace for the service mesh sidecar to perform load balancing"
+rules:
+- apiGroups: [""]
+  resources: ["endpoints", "services"]
+  verbs: ["get", "list", "watch"]

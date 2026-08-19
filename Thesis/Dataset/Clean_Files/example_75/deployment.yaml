@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: queue-worker
+  namespace: workers
+  annotations:
+    description: "Queue worker service requiring access to its RabbitMQ credentials secret for message queue authentication"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: queue-worker
+  template:
+    metadata:
+      labels:
+        app: queue-worker
+    spec:
+      serviceAccountName: queue-worker-sa
+      containers:
+      - name: worker
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

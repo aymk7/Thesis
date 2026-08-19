@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-cache-ingress-policy
+  namespace: production
+  annotations:
+    description: "Restricts ingress to redis-cache pods from the sandbox namespace for feature testing, but uses namespaceSelector only granting access to all pods in the sandbox namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: redis-cache
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: sandbox
+    ports:
+    - protocol: TCP
+      port: 6379

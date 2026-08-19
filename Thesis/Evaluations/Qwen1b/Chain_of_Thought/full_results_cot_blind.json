@@ -1,0 +1,728 @@
+{
+  "example_01": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The `Role` and `RoleBinding` are correctly configured to manage pod lifecycle for the web application namespace, with appropriate permissions granted."
+  },
+  "example_02": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The manifest files do not contain any security misconfigurations. The ClusterRole and ClusterRoleBinding are correctly defined with the appropriate permissions, and there is no interaction between them that would create a security weakness."
+  },
+  "example_03": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The `role.yaml` defines a role with permissions to list, create, and update deployments and services in the `cicd` namespace, while the `rolebinding.yaml` binds that role to anonymous users for CI/CD pipeline access without granting elevated privileges."
+  },
+  "example_04": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `role.yaml` file defines a role with permissions to read secrets and configmaps, which is correctly bound to the `system:authenticated` group in the `rolebinding.yaml` file. There are no cross-resource relationships that could be considered as creating a security weakness."
+  },
+  "example_05": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a cluster role with permissions to read node information, and the `clusterrolebinding.yaml` binds that role to an unauthenticated group, which is expected behavior for infrastructure tooling."
+  },
+  "example_06": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The `role.yaml` defines a role with permissions to read and write to configmaps, which is correctly bound to the `system:authenticated` group in `rolebinding.yaml`. There are no cross-resource relationships that could be considered as creating a security weakness."
+  },
+  "example_07": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a ClusterRole that allows the creation of service accounts across the cluster, and the `clusterrolebinding.yaml` binds this role to authenticated users for provisioning purposes. There are no cross-resource relationships or permissions that could be considered as misconfigurations."
+  },
+  "example_08": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `Role` and `RoleBinding` are correctly configured to allow access for development purposes without granting unauthenticated users pod exec or log access, which is a common misconfiguration."
+  },
+  "example_09": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The `role.yaml` defines a role with permissions to manage ingress resources, and the `rolebinding.yaml` binds that role to authenticated users for routing configuration management. There are no cross-resource relationships or interactions between these two files that would indicate a potential security weakness."
+  },
+  "example_10": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The roles and role bindings defined in `clusterrole.yaml` and `clusterrolebinding.yaml` are correctly configured to grant full administrative access within tenant namespaces for self-service provisioning, as described by the annotations."
+  },
+  "example_11": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, rolebinding, and serviceaccount resources are configured in a way that follows best practices for RBAC, service accounts, network policies, and secret access."
+  },
+  "example_12": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to the service account."
+  },
+  "example_13": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to the service account."
+  },
+  "example_14": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to the service account."
+  },
+  "example_15": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to the service account."
+  },
+  "example_16": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, rolebinding, and serviceaccount resources are configured in a way that follows best practices for RBAC, service accounts, network policies, and secret access."
+  },
+  "example_17": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, role binding, and service account are configured in a way that follows best practices for Kubernetes RBAC, service accounts, and network policies."
+  },
+  "example_18": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The permissions and policies defined in each file are isolated and do not interact with other resources or files."
+  },
+  "example_19": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to the service account."
+  },
+  "example_20": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to the service account."
+  },
+  "example_21": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies that the service account for the pod should be automatically mounted, which is a standard practice to avoid exposing sensitive information. The network policy restricts traffic only to pods with the label 'role: ingress-controller', ensuring that incoming traffic is restricted to the intended components of the cluster."
+  },
+  "example_22": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, but does not grant RBAC permissions to the pods themselves. The network policy isolates the postgres pod from unauthorised ingress traffic without granting any additional permissions."
+  },
+  "example_23": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, which is bound to a role with appropriate permissions. The network policy restricts traffic from pods labeled 'role: metrics-consumer' to the Prometheus scraper pods."
+  },
+  "example_24": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, which is bound to the appropriate role, and the network policy restricts traffic based on labels matching 'app: payment-api' and 'env: production'. There are no cross-resource relationships that would indicate a potential security weakness."
+  },
+  "example_25": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, which is bound to the appropriate role in RBAC, ensuring that only authorized pods can access the Elasticsearch service. The network policy isolates the Elasticsearch pods from external traffic, further enhancing security."
+  },
+  "example_26": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations. The deployment specifies a service account for RabbitMQ, which is bound to the appropriate role in the pod template. The network policy isolates RabbitMQ pods from other pods on the same network by allowing ingress only from authorised consumers."
+  },
+  "example_27": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, which is bound to the appropriate role in the RBAC configuration. The network policy restricts traffic from build agents only, ensuring that Jenkins pods are accessible via the specified ingress."
+  },
+  "example_28": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies that the service account for the pod should be automatically mounted, which is a standard practice to avoid exposing sensitive information. The network policy restricts traffic from the ingress controller only, ensuring that pods in the 'reactapp' namespace can only access services within their own namespace."
+  },
+  "example_29": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies that service accounts are bound to the pods, ensuring RBAC permissions are correctly managed. The network policy restricts traffic between specific pods without granting unnecessary permissions."
+  },
+  "example_30": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, which is bound to a role with specific permissions. The network policy restricts traffic between pods based on labels, ensuring isolation without creating unnecessary restrictions."
+  },
+  "example_31": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The roles and bindings are correctly defined with appropriate permissions, and there is no interaction between the resources that would indicate a potential vulnerability."
+  },
+  "example_32": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The RBAC rules and service account bindings are correctly configured, with appropriate permissions granted to the roles and role bindings."
+  },
+  "example_33": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The roles and bindings defined in each file are correctly configured without conflicting permissions or policies."
+  },
+  "example_34": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The RBAC rules and permissions are defined in a way that is consistent with best practices, ensuring that the cluster resources are managed securely."
+  },
+  "example_35": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The ClusterRole and ClusterRoleBinding are correctly configured to allow the specified permissions without creating a cross-resource relationship that would be considered a misconfiguration."
+  },
+  "example_36": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The roles and bindings are correctly defined, with the service account impersonation role bound to a specific service account in the 'platform' namespace."
+  },
+  "example_37": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The roles and bindings defined in the cluster role and binding files are correctly configured, with appropriate permissions granted to the service account for managing RBAC resources."
+  },
+  "example_38": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The roles and bindings defined in the files are consistent with standard Kubernetes practices for RBAC, service accounts, network policies, and secret access."
+  },
+  "example_39": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The roles and bindings are correctly defined with appropriate permissions, and there is no evidence of cross-resource relationships that could lead to a security weakness."
+  },
+  "example_40": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The roles and bindings are configured in a way that follows best practices for RBAC, service accounts, network policies, and secret access."
+  },
+  "example_41": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only as needed without creating unnecessary permissions or interactions between resources."
+  },
+  "example_42": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles."
+  },
+  "example_43": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles."
+  },
+  "example_44": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured without any cross-resource relationships that could lead to a security weakness."
+  },
+  "example_45": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles."
+  },
+  "example_46": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only as needed without creating unnecessary permissions or interactions between resources."
+  },
+  "example_47": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access as expected without creating a cross-resource relationship that would be considered a misconfiguration."
+  },
+  "example_48": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles."
+  },
+  "example_49": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only within their respective namespaces without exposing sensitive information or violating RBAC policies."
+  },
+  "example_50": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only as needed without creating unnecessary permissions or interactions between resources."
+  },
+  "example_76": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The manifest files do not contain any security misconfigurations. The Role and RoleBinding are correctly defined with appropriate permissions, and there is no interaction between them that would create a security weakness."
+  },
+  "example_77": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The provided files define a ClusterRole and its binding, which grants read access to secrets across the cluster. There are no cross-resource relationships that suggest a security misconfiguration."
+  },
+  "example_78": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `role.yaml` file defines a role with permissions to manage NetworkPolicy resources, and the `rolebinding.yaml` file binds that role to authenticated users in the API namespace. There are no cross-resource relationships or interactions between these two files that would indicate a potential security weakness."
+  },
+  "example_79": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a ClusterRole with specific permissions, and the `clusterrolebinding.yaml` binds that role to authenticated users via a ClusterRoleBinding. There are no cross-resource relationships or interactions between these resources that would indicate a potential security weakness."
+  },
+  "example_80": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `role.yaml` file defines a role with permissions to create ServiceAccount tokens, and the `rolebinding.yaml` file binds that role to authenticated users in the staging namespace. There are no cross-resource relationships or interactions between these resources that would indicate a potential security weakness."
+  },
+  "example_81": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, rolebinding, and serviceaccount resources are configured in a way that follows best practices for RBAC, service accounts, network policies, and secret access."
+  },
+  "example_82": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to the service account 'jenkins-sa'."
+  },
+  "example_83": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to service accounts."
+  },
+  "example_84": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The permissions and policies defined in each file are isolated and do not interact with other resources or files."
+  },
+  "example_85": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to the service account 'jaeger-sa'."
+  },
+  "example_86": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the container, which is expected behavior. The network policy restricts traffic to Solr pods in production, but it does so by matching pod labels rather than directly controlling access based on resource permissions."
+  },
+  "example_87": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the Kafka broker, but does not grant it permissions to access other resources or services outside of its intended scope. The network policy restricts traffic from pods labeled 'role: kafka-client' to port 9092 on the Kafka broker pod."
+  },
+  "example_88": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The deployment and network policy files do not contain any evidence of a misconfiguration. The deployment specifies that Falco is running in a service account with specific resource limits, which aligns with the expected behavior for security pods. The network policy isolates Falco to restrict its ingress traffic only to monitoring systems."
+  },
+  "example_89": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the containers, which is bound to the appropriate role in RBAC, ensuring that only authorized pods can access the Envoy proxy. The network policy restricts traffic from load-balancer pods to the stable version of Envoy without granting unnecessary permissions."
+  },
+  "example_90": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the Jupyter container, which is bound to the appropriate role in the pod template. The network policy restricts access to the Jupyter notebook port only from authorized users with the 'ml-user' label."
+  },
+  "example_91": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The roles and bindings defined in the cluster role, cluster role binding, and target role binding are all correctly configured according to Kubernetes best practices."
+  },
+  "example_92": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The manifest files do not contain any security misconfigurations. The RBAC roles and role bindings are correctly defined, with appropriate permissions granted to the correct subjects."
+  },
+  "example_93": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The roles and bindings defined in these files are consistent with standard Kubernetes practices for RBAC, service accounts, and cluster role bindings."
+  },
+  "example_94": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The ClusterRole and ClusterRoleBinding are correctly configured to allow the SRE team to bind ClusterRoles for incident response access management, and the role is bound to the group 'sre-team'. There are no cross-resource relationships that could be considered as a potential security weakness."
+  },
+  "example_95": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The RBAC rules and service accounts are configured in a way that is consistent with best practices, ensuring proper access control without creating unnecessary permissions."
+  },
+  "example_96": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles assigned to the service account."
+  },
+  "example_97": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles."
+  },
+  "example_98": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only as needed without creating unnecessary permissions or interactions between resources."
+  },
+  "example_99": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles."
+  },
+  "example_100": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles."
+  },
+  "example_101": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The cluster roles and bindings in these files define a role that allows read access to pods within the webapp namespace for the deployment controller. This is a standard RBAC setup, which does not create any security misconfigurations."
+  },
+  "example_102": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `ClusterRole` and `ClusterRoleBinding` are correctly configured to grant read-only access to secrets within the database namespace only for the database administrator, as indicated by the annotations."
+  },
+  "example_103": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The cluster roles and bindings in these files define a role that allows read access to configmaps within the monitoring namespace for the 'monitoring-team' group. There is no evidence of cross-resource relationships or interactions between different resources that would indicate a security misconfiguration."
+  },
+  "example_104": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a cluster role with specific permissions for the `cicd-pipeline-sa` service account, and the `clusterrolebinding.yaml` binds that role to the service account as intended. There are no cross-resource relationships or interactions between these files that would indicate a security misconfiguration."
+  },
+  "example_105": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a cluster role with specific permissions for pod exec access, and the `clusterrolebinding.yaml` binds that role to a user named 'log-collection-admin'. There are no cross-resource relationships or interactions between these resources that would indicate a potential security weakness."
+  },
+  "example_106": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a cluster role with permissions to read, list, create, update, patch, and delete configmaps in the 'payments' namespace for the 'payments configuration team'. The `clusterrolebinding.yaml` binds this role to a group named 'payments-config-team', ensuring that only members of this group can use the specified role. There are no cross-resource relationships or permissions that could be considered misconfigurations."
+  },
+  "example_107": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a cluster role with permissions to manage PVCs in the staging namespace, and the `clusterrolebinding.yaml` binds this role to a service account for the provisioner. There are no cross-resource relationships that could be considered as creating a security weakness."
+  },
+  "example_108": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a cluster role with permissions to manage Ingress resources, and the `clusterrolebinding.yaml` binds that role to a user named 'api-routing-admin'. There are no cross-resource relationships or interactions between these two files that would indicate a potential security issue."
+  },
+  "example_109": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The provided files define a ClusterRole and its binding, which are related but do not create any security misconfigurations. The role is intended for the security audit team to read service accounts in the 'security' namespace, and the binding associates this role with the group 'security-audit-team'. There is no interaction between these resources that would indicate a potential security weakness."
+  },
+  "example_110": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a cluster role with permissions to read, list, create, update, patch, and delete network policies in the 'networking.k8s.io' API group within the 'platform' namespace. This is consistent with RBAC best practices for managing access control. Similarly, the `clusterrolebinding.yaml` binds this role to a service account named 'platform-network-controller-sa', which is part of the 'platform' namespace. There are no cross-resource relationships that suggest misconfigurations."
+  },
+  "example_111": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The provided manifest files do not contain any security misconfigurations. The ClusterRole and ClusterRoleBinding are correctly defined with the appropriate permissions for the specified users and resources."
+  },
+  "example_112": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a cluster role with specific permissions for CronJobs in the 'dev' namespace, and the `clusterrolebinding.yaml` binds this role to a group named 'developer-team'. There are no cross-resource relationships that could be considered as creating a security weakness."
+  },
+  "example_113": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The cluster roles and bindings defined in these files do not create any cross-resource relationships that would be considered security misconfigurations. The role is scoped to the 'infra' namespace, and the service account used for binding has a specific name and namespace."
+  },
+  "example_114": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The ClusterRole and ClusterRoleBinding files define a role that can only be used by the 'search-maintenance-operator' user, which is bound to this specific role via annotations. There are no cross-resource relationships or permissions that could lead to a security weakness."
+  },
+  "example_115": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The ClusterRole and ClusterRoleBinding files define roles and bindings correctly, with the role granting access to delete deployments in the 'data' namespace only for a specific group (data-platform-ops). This is a standard RBAC configuration without any cross-resource relationships that could be considered insecure."
+  },
+  "example_51": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The `Role` and `RoleBinding` are correctly configured to grant read access only to pods in the logging namespace, as described by their annotations."
+  },
+  "example_52": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a cluster role with specific permissions, and the `clusterrolebinding.yaml` binds that role to a group within the RBAC system. There are no cross-resource relationships or interactions between these two files that would indicate a potential security issue."
+  },
+  "example_53": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only as needed without creating unnecessary permissions or interactions between resources."
+  },
+  "example_54": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant read access only to pods, services, and endpoints for service discovery purposes in the monitoring namespace."
+  },
+  "example_55": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, which is bound to the appropriate role in RBAC, ensuring that only authorized actions can be performed on the pods. The network policy isolates the postgres pods from external traffic while allowing DNS egress."
+  },
+  "example_56": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, but does not grant it permissions to access sensitive resources or perform unauthorized actions. The network policy isolates pods based on labels matching both 'app' and 'env', ensuring that only production payment API pods can communicate with the frontend."
+  },
+  "example_57": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The manifest files do not contain any security misconfigurations. The ClusterRole and ClusterRoleBinding are correctly defined, with the correct permissions granted to the monitoring service account."
+  },
+  "example_58": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The role and role binding are correctly defined with appropriate permissions for the specified resources."
+  },
+  "example_59": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access as described in the annotations without creating a cross-resource relationship that would be considered a misconfiguration."
+  },
+  "example_60": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured with appropriate permissions and roles for the backend API service account to read from the database password secret only."
+  },
+  "example_61": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The cluster roles and bindings defined in these files do not create any cross-resource relationships that would be considered security misconfigurations. The permissions are clearly scoped to the platform-engineering group, and there is no interaction between different resources or files."
+  },
+  "example_62": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The manifest files do not contain any security misconfigurations. The `Role` and `RoleBinding` are correctly configured to grant read access to configmaps in the audit namespace for a specific service account, without any cross-resource relationships that could be considered as misconfigurations."
+  },
+  "example_63": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `role.yaml` file defines a role with limited access to endpoints and services, which is then bound to the service account in `rolebinding.yaml`. There are no cross-resource relationships that could be considered as creating a security weakness."
+  },
+  "example_64": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only as needed without creating unnecessary permissions or interactions between resources."
+  },
+  "example_65": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The manifest files do not contain any security misconfigurations. The `ClusterRole` and `ClusterRoleBinding` are correctly configured to grant access only as needed for Fluentd, with the service account bound appropriately."
+  },
+  "example_66": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `role.yaml` defines a cluster role with permissions to read deployments and replicasets, which is bound to the `kube-state-metrics-sa` service account in the `monitoring` namespace. This setup ensures that only authorized resources are accessed without creating any potential security issues."
+  },
+  "example_67": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, which is bound to the appropriate role in RBAC, ensuring that only authorized actions can be performed. The network policy isolates the Redis pods from external traffic while allowing DNS egress, preventing potential security risks."
+  },
+  "example_68": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment and network policy files do not contain any security misconfigurations. The deployment specifies a service account for the pod, which is bound to the appropriate role in RBAC, ensuring that only authorized actions can be performed. The network policy isolates Elasticsearch pods from other services on port 9200 while allowing DNS egress."
+  },
+  "example_69": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The deployment and network policy files do not contain any security misconfigurations when read together. The deployment specifies a service account for the pod, which is bound to a role with specific permissions. The network policy restricts traffic from pods labeled 'load-balancer' to ingress from that load balancer, and allows egress traffic to backend API endpoints and DNS queries."
+  },
+  "example_70": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The provided manifest files do not contain any evidence of a misconfiguration. The `clusterrole.yaml` defines a cluster role with read access to RBAC resources, and the `clusterrolebinding.yaml` binds that role to a group within the security audit team. There is no interaction between these two files or across other resources that would indicate a potential security weakness."
+  },
+  "example_71": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The `role.yaml` defines a role with read-only access to pods, services, and configmaps in the development namespace for developers, which is correctly bound using a `rolebinding`. There are no cross-resource relationships that could be considered as creating a security weakness."
+  },
+  "example_72": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role and role binding files define access permissions for the 'pod-log-reader' role. The role is bound to the 'support-team' group, ensuring that only members of this group can use the specified permissions. There are no cross-resource relationships or interactions between these two files that would indicate a security misconfiguration."
+  },
+  "example_73": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only as needed without creating unnecessary permissions or interactions between resources."
+  },
+  "example_74": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only as needed without creating unnecessary permissions or interactions between resources."
+  },
+  "example_75": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The deployment, role, and role binding are correctly configured to grant access only as needed without creating unnecessary permissions or interactions between resources."
+  },
+  "example_116": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The manifest files do not contain any security misconfigurations. The `clusterrole.yaml` defines a ClusterRole with read-only access to pods in the monitoring namespace, and this is correctly restricted by the `rolebinding.yaml` that binds it to a specific service account within that namespace."
+  },
+  "example_117": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The cluster role and role binding in the provided files do not create a security misconfiguration. The role is scoped to the logging namespace, ensuring that only resources within that namespace can be accessed by the specified group (logging-team). This aligns with RBAC best practices."
+  },
+  "example_118": {
+    "verdict": "clean",
+    "category": null,
+    "justification": "The cluster role and role binding provided in the files do not create any security misconfigurations. The role is scoped to a specific namespace (cicd) and only grants read access to deployments, which aligns with best practices for RBAC."
+  },
+  "example_119": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The provided manifest files do not contain any security misconfigurations. The `Role` and `RoleBinding` are correctly configured to grant read access only to the `database-credentials` secret within the `database` namespace, as specified in the annotations."
+  },
+  "example_120": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The cluster role and the corresponding role binding define a specific set of permissions for the 'ml-job-reader' ClusterRole. The subjects are bound to this role, ensuring that only members of the 'ml-team' group within the 'ml' namespace can access jobs. This configuration is consistent across both files and does not create any security weaknesses."
+  }
+}

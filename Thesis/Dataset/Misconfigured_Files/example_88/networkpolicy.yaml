@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: falco-isolation-policy
+  namespace: security
+  annotations:
+    description: "Isolates Falco security pods restricting ingress to monitoring systems only"
+spec:
+  podSelector:
+    matchLabels:
+      tier: security
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: security-dashboard
+    ports:
+    - protocol: TCP
+      port: 8765

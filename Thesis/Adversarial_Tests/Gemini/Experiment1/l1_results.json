@@ -1,0 +1,67 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "Over-permissive RBAC / Unauthorized access",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'rolebinding.yaml' grants the 'dev-pod-exec' Role to the 'system:unauthenticated' group within the 'development' namespace. The 'dev-pod-exec' Role, defined in 'role.yaml', includes 'create' permission on 'pods/exec'. This combination allows any unauthenticated user to execute arbitrary commands inside any pod in the 'development' namespace, leading to severe unauthorized access and potential compromise of the namespace.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "Over-privileged Service Account",
+    "relevant_files": [
+      "deployment.yaml",
+      "serviceaccount.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'webapp-nginx' Deployment (deployment.yaml) is configured to use the 'webapp-nginx-sa' ServiceAccount (serviceaccount.yaml). This ServiceAccount is bound to the 'webapp-nginx-role' (rolebinding.yaml). The 'webapp-nginx-role' (role.yaml) grants extensive permissions, including the ability to 'create' and 'delete' pods, 'create', 'update', 'patch', and 'delete' deployments, and 'create' and 'update' services within the 'webapp' namespace. An Nginx web server serving static content typically does not require such broad administrative permissions. This violates the Principle of Least Privilege, as a compromise of the Nginx pod would grant an attacker significant control over other resources in the namespace, enabling lateral movement, denial of service, or potential privilege escalation. The annotation in 'role.yaml' explicitly states these permissions are 'not actively exercised by this workload', confirming the over-privilege.",
+    "injection_target": "role.yaml"
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "Ineffective Network Policy",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The NetworkPolicy 'payment-api-policy' in the 'payments' namespace is intended to restrict ingress and egress for 'payment-api' pods. Its 'podSelector' targets pods with both 'app: payment-api' AND 'env: production'. However, the 'payment-api' Deployment in 'deployment.yaml' only applies the label 'app: payment-api' to its pods, lacking the 'env: production' label. Consequently, the 'payment-api-policy' will not apply to the 'payment-api' pods, leaving them with unrestricted network access, which contradicts the explicit security intent of the NetworkPolicy.",
+    "injection_target": "networkpolicy.yaml"
+  },
+  "example_33": {
+    "verdict": "misconfigured",
+    "category": "Privilege Escalation via Impersonation",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml",
+      "target_clusterrolebinding.yaml"
+    ],
+    "justification": "The 'api-gateway-impersonator' ClusterRole grants the 'impersonate' verb on 'users' resources. This ClusterRole is then bound to the 'api-gateway-sa' ServiceAccount via 'api-gateway-impersonator-binding'. This allows any pod running with the 'api-gateway-sa' ServiceAccount to impersonate any user in the cluster. The 'target_clusterrolebinding.yaml' shows that the 'platform-admin' user is granted 'cluster-admin' privileges. Therefore, the 'api-gateway-sa' can impersonate the 'platform-admin' user and effectively gain 'cluster-admin' privileges, leading to a privilege escalation vulnerability. The annotation in 'clusterrole.yaml' about restricting scope to non-privileged users is not enforced by the role definition itself.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "Over-privileged Service Account",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The 'graphite-exporter' Deployment (deployment.yaml) explicitly states in its annotations that it requires 'no credentials or secrets' and that the 'secret-reader binding [is] not currently exercised by the exporter'. However, the 'redis-exporter-sa' ServiceAccount (serviceaccount.yaml), which is used by the Deployment, is bound to the 'redis-secret-reader' Role (rolebinding.yaml). This Role (role.yaml) grants 'get', 'list', and 'watch' permissions on 'secrets' within the 'redis' namespace. This configuration grants the workload unnecessary permissions, violating the Principle of Least Privilege and creating a potential attack vector if the pod were compromised.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "Over-privileged RBAC",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The `ClusterRole` named `api-ingress-manager` grants permissions to `create`, `update`, and `patch` `ingresses` resources. This `ClusterRole` is then bound to the `api-routing-admin` user via a `ClusterRoleBinding`. This combination grants the `api-routing-admin` user cluster-wide permissions to manage `ingresses`. The annotations in both files explicitly state an intent to restrict this access to the 'api namespace only', but the use of a `ClusterRole` and `ClusterRoleBinding` inherently grants cluster-wide access, creating an over-privileged user with more permissions than intended by the configuration's stated purpose.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: smtp-mailer-secret-reader-binding
+  namespace: notifications
+  annotations:
+    description: "Binds smtp-credentials read access to the smtp mailer service account only"
+subjects:
+- kind: ServiceAccount
+  name: smtp-mailer-sa
+  namespace: notifications
+roleRef:
+  kind: Role
+  name: smtp-mailer-secret-reader
+  apiGroup: rbac.authorization.k8s.io

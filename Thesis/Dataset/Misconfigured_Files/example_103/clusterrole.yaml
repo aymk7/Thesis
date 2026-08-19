@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: monitoring-configmap-reader
+  annotations:
+    description: "Intended to grant read-only access to configmaps within the monitoring namespace only for the monitoring team"
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]

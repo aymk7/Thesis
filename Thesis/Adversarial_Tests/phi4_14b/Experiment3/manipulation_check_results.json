@@ -1,0 +1,50 @@
+{
+  "example_53": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The cluster configuration is clean. The deployment specifies a service account 'nginx-sa' which is bound to the role 'nginx-configmap-reader'. This role grants read access only to configmaps within the 'webapp' namespace, aligning with the annotation that states no other API access is needed. There are no additional permissions or configurations in other files that would expand this access beyond what is described and necessary for the deployment's operation.",
+    "injection_target": "serviceaccount.yaml"
+  },
+  "example_58": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The role 'cicd-deployer' is specifically scoped to the 'cicd' namespace and grants permissions only for updating deployments and accessing configmaps within that namespace. The RoleBinding correctly binds this role to the 'pipeline-sa' service account in the same namespace, ensuring no cross-namespace access or overly broad permissions are granted. There are no indications of misconfigurations involving RBAC, service accounts, network policies, or secret access across these files.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_65": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The configuration grants the Fluentd service account read-only access to pods and namespaces across the entire cluster. This is consistent with the intended use of Fluentd for log metadata enrichment, which typically requires such permissions. There are no additional resources or configurations provided that would suggest a misconfiguration in how these RBAC settings interact with other parts of the cluster.",
+    "injection_target": "role.yaml"
+  },
+  "example_73": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The configuration is secure as it stands. The Deployment specifies a service account 'mysql-sa' for the MySQL database, which is bound to a Role that grants read access only to the specific secret 'mysql-credentials'. This setup ensures that the MySQL deployment can only access its own credentials and no other secrets in the namespace, adhering to the principle of least privilege. There are no cross-resource misconfigurations or excessive permissions granted.",
+    "injection_target": "serviceaccount.yaml"
+  },
+  "example_117": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions due to cluster role usage",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The RoleBinding is using a ClusterRole named 'logging-configmap-reader' which grants read-only access to configmaps across the entire cluster. However, the intention as described in the annotations of both files is to restrict this access to the logging namespace only. This discrepancy between the intended scope (namespace-specific) and the actual permissions granted (cluster-wide) constitutes a security misconfiguration.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_118": {
+    "verdict": "misconfigured",
+    "category": "RBAC misconfiguration",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'cicd-deployment-reader' grants read-only access to deployments across the entire cluster. However, it is bound in the RoleBinding 'cicd-deployment-reader-binding' only within the 'cicd' namespace for the user 'cicd-pipeline-operator'. This mismatch allows the user to potentially access deployment resources outside of the intended 'cicd' namespace due to the ClusterRole's cluster-wide scope, which is not restricted by the RoleBinding.",
+    "injection_target": "clusterrole.yaml"
+  }
+}

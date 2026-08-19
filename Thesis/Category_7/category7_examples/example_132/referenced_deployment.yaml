@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: observability-agent
+  namespace: observability
+  annotations:
+    description: "Observability namespace contains tracing agents and telemetry collectors that receive data from all workloads including potentially malicious payloads, granting all observability pods access to cert-manager risks private key exposure through a compromised telemetry component"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: observability-agent
+  template:
+    metadata:
+      labels:
+        app: observability-agent
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: agent
+        image: jaegertracing/all-in-one:1.50
+        ports:
+        - containerPort: 16686
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

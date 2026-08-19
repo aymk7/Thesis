@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-wide-reader
+  annotations:
+    description: "Cluster-wide read access for observability and compliance tooling"
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
+- nonResourceURLs: ["*"]
+  verbs: ["get"]

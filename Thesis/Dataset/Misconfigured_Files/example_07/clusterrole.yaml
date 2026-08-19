@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: serviceaccount-creator
+  annotations:
+    description: "Allows creation of service accounts across the cluster for provisioning workflows"
+rules:
+- apiGroups: [""]
+  resources: ["serviceaccounts"]
+  verbs: ["get", "list", "create", "update", "patch"]
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list", "watch"]

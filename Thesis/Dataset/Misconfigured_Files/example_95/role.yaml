@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ops-role-manager
+  namespace: ops
+  annotations:
+    description: "Allows ops tooling to escalate and bind roles for automated access provisioning"
+rules:
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["roles"]
+  verbs: ["get", "list", "escalate", "bind"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["rolebindings"]
+  verbs: ["get", "list", "create", "update"]

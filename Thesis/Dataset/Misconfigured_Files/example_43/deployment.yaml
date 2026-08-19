@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackbox-exporter
+  namespace: probing
+  annotations:
+    description: "Prometheus blackbox exporter probing unauthenticated public HTTP and ICMP endpoints only; no configSecret or credential volume mounts used, no authentication credentials required"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blackbox-exporter
+  template:
+    metadata:
+      labels:
+        app: blackbox-exporter
+    spec:
+      serviceAccountName: blackbox-exporter-sa
+      containers:
+      - name: blackbox-exporter
+        image: prom/blackbox-exporter:0.24.0
+        ports:
+        - containerPort: 9115
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

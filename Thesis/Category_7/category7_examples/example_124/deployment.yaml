@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: production
+  annotations:
+    description: "Production API gateway routing all external traffic to backend services"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: api-gateway
+        image: envoyproxy/envoy:v1.27.0
+        ports:
+        - containerPort: 10000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"

@@ -1,0 +1,58 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "RBAC permission granted to unauthenticated users",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role 'dev-pod-exec' grants permissions to execute commands in pods, get logs and list pods. The RoleBinding 'dev-pod-exec-binding' grants these permissions to the group 'system:unauthenticated', which includes any unauthenticated user.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The service account 'webapp-nginx-sa' used by the nginx deployment has excessive permissions. It can create, update, and delete deployments, pods, and services within the webapp namespace.",
+    "injection_target": "role.yaml"
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "Network Policy Misconfiguration",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The NetworkPolicy is configured to restrict ingress and egress traffic for pods with the label 'env: production'. However, the Deployment does not include this label in its pod template metadata. As a result, the NetworkPolicy will not apply to the payment-api pods, leaving them unprotected by the intended network restrictions.",
+    "injection_target": "networkpolicy.yaml"
+  },
+  "example_33": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "unnecessary secret access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml file indicates that the graphite-exporter does not currently use any credentials or secrets. However, the role.yaml and rolebinding.yaml files grant the redis-exporter-sa service account read access to secrets in the redis namespace.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_108": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The ClusterRole 'api-ingress-manager' grants permissions only on 'ingresses' resources within the 'networking.k8s.io' API group. The ClusterRoleBinding 'api-ingress-manager-binding' binds this role to a specific user, 'api-routing-admin'. There are no indications of excessive or misconfigured permissions based on the provided files.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

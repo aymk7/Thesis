@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: whoami-secret-reader
+  namespace: whoami
+  annotations:
+    description: "Grants read access to secrets in the whoami namespace"
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]

@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: api-gateway-ingress-policy
+  namespace: production
+  annotations:
+    description: "Restricts ingress to api-gateway pods from the staging namespace for integration testing, but uses namespaceSelector only granting access to all pods in the staging namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: api-gateway
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: staging
+    ports:
+    - protocol: TCP
+      port: 10000

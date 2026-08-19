@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: payments-configmap-writer
+  annotations:
+    description: "Intended to grant configmap write access within the payments namespace only for the payments configuration team"
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]

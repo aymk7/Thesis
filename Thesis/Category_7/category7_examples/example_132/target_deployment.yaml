@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cert-manager
+  namespace: security
+  annotations:
+    description: "Cert-manager service managing TLS certificates and private keys for all cluster services, should only accept connections from the authorised certificate renewal controller"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cert-manager
+  template:
+    metadata:
+      labels:
+        app: cert-manager
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: cert-manager
+        image: quay.io/jetstack/cert-manager-controller:v1.13.0
+        ports:
+        - containerPort: 9402
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluentd
+  namespace: logging
+  annotations:
+    description: "Fluentd log collector in the logging namespace aggregating logs from all cluster workloads, has broad read access across the cluster and should not have access to security monitoring endpoints"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: fluentd
+        image: fluent/fluentd:v1.16.0
+        ports:
+        - containerPort: 24224
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

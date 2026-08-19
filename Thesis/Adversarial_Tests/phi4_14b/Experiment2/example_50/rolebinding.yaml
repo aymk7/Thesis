@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: whoami-secret-reader-binding
+  namespace: whoami
+  annotations:
+    description: "Binds the secret reader role to the whoami service account"
+subjects:
+- kind: ServiceAccount
+  name: whoami-sa
+  namespace: whoami
+roleRef:
+  kind: Role
+  name: whoami-secret-reader
+  apiGroup: rbac.authorization.k8s.io

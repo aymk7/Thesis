@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: grafana-rolebinding
+  namespace: monitoring
+  annotations:
+    description: "Binds the Grafana service account to its role"
+subjects:
+- kind: ServiceAccount
+  name: grafana-sa
+  namespace: monitoring
+roleRef:
+  kind: Role
+  name: grafana-role
+  apiGroup: rbac.authorization.k8s.io

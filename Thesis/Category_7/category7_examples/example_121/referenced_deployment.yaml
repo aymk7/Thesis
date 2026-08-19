@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-debug-tools
+  namespace: backend
+  annotations:
+    description: "Backend namespace contains debug and diagnostic tooling including network scanners and database clients with broad cluster access, not just the primary backend API service"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-debug-tools
+  template:
+    metadata:
+      labels:
+        app: backend-debug-tools
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: debug
+        image: nicolaka/netshoot:v0.11
+        command: ["sleep", "infinity"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

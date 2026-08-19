@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: platform-rbac-manager-binding
+  annotations:
+    description: "Binds the platform RBAC manager role to the platform automation service account"
+subjects:
+- kind: ServiceAccount
+  name: platform-automation-sa
+  namespace: platform
+roleRef:
+  kind: ClusterRole
+  name: platform-rbac-manager
+  apiGroup: rbac.authorization.k8s.io

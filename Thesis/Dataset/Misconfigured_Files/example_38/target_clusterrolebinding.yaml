@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system-masters-admin-binding
+  annotations:
+    description: "system:masters is bound to cluster-admin by default in every Kubernetes cluster — impersonating this group causes the API server to evaluate the request as a cluster-admin member via normal RBAC, granting full cluster access; this binding is effectively irrevocable since holders can recreate it"
+subjects:
+- kind: Group
+  name: system:masters
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io

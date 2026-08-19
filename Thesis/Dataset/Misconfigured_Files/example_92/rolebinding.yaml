@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: data-role-escalator-binding
+  namespace: data
+  annotations:
+    description: "Binds the data role escalator to the data engineering group"
+subjects:
+- kind: Group
+  name: data-engineers
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: data-role-escalator
+  apiGroup: rbac.authorization.k8s.io

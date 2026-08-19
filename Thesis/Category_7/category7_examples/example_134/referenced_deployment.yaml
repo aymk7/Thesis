@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mesh-proxy
+  namespace: mesh
+  annotations:
+    description: "Service mesh namespace contains sidecar proxies injected into all workloads across multiple namespaces including potentially compromised services, granting all mesh pods access to the ingress controller allows a compromised sidecar to interfere with external traffic routing"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mesh-proxy
+  template:
+    metadata:
+      labels:
+        app: mesh-proxy
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: proxy
+        image: envoyproxy/envoy:v1.27.0
+        ports:
+        - containerPort: 15001
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

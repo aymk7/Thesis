@@ -1,0 +1,63 @@
+{
+  "example_32": {
+    "verdict": "misconfigured",
+    "category": "RBAC Privilege Escalation Path",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml",
+      "target_role.yaml"
+    ],
+    "justification": "The 'prometheus-sa' service account is bound to the 'monitoring-role-manager' role in the 'monitoring' namespace. This role grants the 'escalate' verb on 'roles' within the 'rbac.authorization.k8s.io' API group, along with 'get' and 'list' permissions on 'roles'. In the same namespace, there exists a highly privileged role named 'monitoring-namespace-admin' which grants full administrative access ('*' on '*' for '*') within the 'monitoring' namespace. The 'escalate' permission on 'roles' allows 'prometheus-sa' to create new roles (or update existing ones it has 'update' permission on) that grant permissions it does not possess, by referencing an existing role like 'monitoring-namespace-admin'. This means 'prometheus-sa' can create a new role with full administrative privileges within the 'monitoring' namespace. While 'prometheus-sa' does not have 'create' or 'update' permissions on 'rolebindings' to directly bind this powerful role to itself, the ability to define such a highly privileged role is a significant security weakness, as it creates a pre-staged component for potential privilege escalation if combined with other vulnerabilities or misconfigurations (e.g., another service account with 'create' on 'rolebindings').",
+    "injection_target": "target_role.yaml"
+  },
+  "example_35": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The 'security-audit-escalator' ClusterRole grants the 'escalate' verb on 'clusterroles' to the 'security-team' group. While 'escalate' is a powerful permission, it only allows a user to update a role or clusterrole to include permissions that the user *already possesses*. In this configuration, the 'security-team' group, through the 'security-audit-escalator' role, only possesses 'get', 'list', 'escalate' on 'clusterroles' and 'get', 'list', 'watch' on 'namespaces'. They do not possess the broad 'get', 'list', 'watch' permissions on all resources (as defined in 'cluster-wide-reader'), nor do they have permissions to create or update ClusterRoles or ClusterRoleBindings. Therefore, they cannot leverage the 'escalate' verb to grant themselves or others the 'cluster-wide-reader' permissions, or any other permissions they do not already hold. No cross-resource misconfiguration is evident based strictly on the provided manifests.",
+    "injection_target": "target_clusterrole.yaml"
+  },
+  "example_50": {
+    "verdict": "misconfigured",
+    "category": "Over-permissioned Service Account",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The 'whoami' deployment (deployment.yaml) explicitly states in its annotation that it is a 'diagnostic service returning HTTP request metadata only, no credentials or secrets required'. However, the 'whoami-sa' ServiceAccount (serviceaccount.yaml) used by this deployment is granted 'get', 'list', 'watch' permissions on 'secrets' resources within the 'whoami' namespace via the 'whoami-secret-reader' Role (role.yaml) and 'whoami-secret-reader-binding' RoleBinding (rolebinding.yaml). This grants the 'whoami' service unnecessary and excessive access to sensitive data (secrets), violating the principle of least privilege. If the 'whoami' pod were compromised, an attacker could potentially read all secrets in the 'whoami' namespace.",
+    "injection_target": "role.yaml"
+  },
+  "example_91": {
+    "verdict": "misconfigured",
+    "category": "Privilege Escalation via RBAC Misconfiguration",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml",
+      "target_rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'rolebinding-manager' grants the 'bind' verb on 'rolebindings' resources. While 'bind' is not a standard verb for 'rolebindings' in Kubernetes RBAC, the annotation on the ClusterRole explicitly states its purpose: \"Allows platform tooling to bind existing RoleBindings for access delegation\". This annotation clearly indicates the author's intent for this permission to allow modification or re-assignment of existing RoleBindings.\n\nThe 'platform-automation-sa' service account is granted this 'rolebinding-manager' ClusterRole. If the 'bind' verb on 'rolebindings' is interpreted by the API server (or a custom admission controller) as allowing modification (e.g., similar to 'update' or 'patch'), then 'platform-automation-sa' could modify any existing RoleBinding.\n\nSpecifically, 'platform-automation-sa' could modify the 'namespace-admin-binding' in the 'production' namespace. This RoleBinding grants the highly privileged 'admin' ClusterRole within the 'production' namespace. By modifying 'namespace-admin-binding' to include itself in the 'subjects' list, 'platform-automation-sa' could effectively grant itself administrative access to the 'production' namespace, leading to a privilege escalation. This misconfiguration arises from the combination of a non-standard but explicitly intended dangerous permission, granted to a service account, which can then target an existing high-privilege RoleBinding.",
+    "injection_target": "target_rolebinding.yaml"
+  },
+  "example_103": {
+    "verdict": "misconfigured",
+    "category": "Over-privileged RBAC",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The 'clusterrole.yaml' defines a ClusterRole named 'monitoring-configmap-reader' that grants 'get', 'list', and 'watch' permissions on 'configmaps'. The annotation in this file explicitly states the intent is to grant access 'within the monitoring namespace only'. However, a ClusterRole, by its nature, defines permissions cluster-wide. The 'clusterrolebinding.yaml' then binds this ClusterRole to the 'monitoring-team' group using a ClusterRoleBinding. The combination of a ClusterRole and a ClusterRoleBinding results in cluster-wide permissions. Therefore, the 'monitoring-team' group is granted read access to *all* configmaps across *all* namespaces in the cluster, which directly contradicts the stated intent of limiting access to the 'monitoring' namespace only. This constitutes an over-privileged RBAC configuration.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_109": {
+    "verdict": "misconfigured",
+    "category": "Over-privileged RBAC",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'security-serviceaccount-reader' (defined in clusterrole.yaml) grants 'get', 'list', and 'watch' permissions on 'serviceaccounts' at the cluster scope. The annotation in clusterrole.yaml explicitly states the intention was to grant this access 'within the security namespace only'. However, ClusterRoles are non-namespaced and apply across the entire cluster. By binding this ClusterRole to the 'security-audit-team' group via the ClusterRoleBinding 'security-serviceaccount-reader-binding' (defined in clusterrolebinding.yaml), the 'security-audit-team' gains read access to service accounts in *all* namespaces, which violates the stated intent of namespace-specific access.",
+    "injection_target": "clusterrole.yaml"
+  }
+}

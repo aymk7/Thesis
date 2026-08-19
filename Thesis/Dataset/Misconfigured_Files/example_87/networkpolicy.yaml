@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kafka-isolation-policy
+  namespace: streaming
+  annotations:
+    description: "Isolates Kafka broker pods restricting ingress to producers and consumers only"
+spec:
+  podSelector:
+    matchLabels:
+      service: kafka
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: kafka-client
+    ports:
+    - protocol: TCP
+      port: 9092

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-tracker
+  namespace: frontend
+  annotations:
+    description: "Third-party analytics tracker deployment in the frontend namespace with broad network access, not a trusted internal service and should not have access to payment processing endpoints"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: analytics-tracker
+  template:
+    metadata:
+      labels:
+        app: analytics-tracker
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: tracker
+        image: node:20-alpine
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

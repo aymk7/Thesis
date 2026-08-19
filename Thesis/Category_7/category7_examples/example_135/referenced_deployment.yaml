@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pipeline-worker
+  namespace: pipeline
+  annotations:
+    description: "Pipeline namespace contains data ingestion and transformation workers that process external data sources including user-submitted content, granting all pipeline pods access to the ML model server risks model extraction or adversarial input attacks from workers processing untrusted data"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: pipeline-worker
+  template:
+    metadata:
+      labels:
+        app: pipeline-worker
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: worker
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

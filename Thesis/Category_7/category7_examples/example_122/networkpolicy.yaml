@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: payment-api-ingress-policy
+  namespace: payments
+  annotations:
+    description: "Restricts ingress to payment-api pods from the frontend namespace, but uses namespaceSelector only granting access to all pods in the frontend namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: payment-api
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: frontend
+    ports:
+    - protocol: TCP
+      port: 8080

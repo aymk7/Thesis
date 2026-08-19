@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: falco
+  namespace: security
+  annotations:
+    description: "Falco runtime security monitoring tool exposing threat detection alerts, should only accept connections from the authorised security dashboard"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: falco
+  template:
+    metadata:
+      labels:
+        app: falco
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: falco
+        image: falcosecurity/falco:0.36.0
+        ports:
+        - containerPort: 8765
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

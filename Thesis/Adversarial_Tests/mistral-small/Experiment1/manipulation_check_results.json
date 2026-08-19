@@ -1,0 +1,55 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "RBAC permission granted to unauthenticated users",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role 'dev-pod-exec' grants permissions to execute commands in pods and access pod logs. The RoleBinding 'dev-pod-exec-binding' grants these permissions to the group 'system:unauthenticated', which includes all unauthenticated users.",
+    "injection_target": "role.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions on service account",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The service account 'webapp-nginx-sa' used by the nginx deployment has excessive permissions. It can create, update, and delete pods, deployments, and services within the 'webapp' namespace, which is more than typically needed for a web server.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_24": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "deployment.yaml"
+  },
+  "example_33": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "target_clusterrolebinding.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "unnecessary secret access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment specifies that no credentials or secrets are required for the graphite-exporter, but the role and rolebinding grant read access to secrets in the redis namespace to the same service account used by the deployment.",
+    "injection_target": "role.yaml"
+  },
+  "example_108": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The ClusterRole 'api-ingress-manager' grants permissions to manage ingresses, but it does not specify any namespace restrictions. The ClusterRoleBinding 'api-ingress-manager-binding' binds this role to the user 'api-routing-admin'. However, there are no network policies or additional RBAC configurations provided that would create a cross-resource security misconfiguration based on the given files.",
+    "injection_target": "clusterrole.yaml"
+  }
+}

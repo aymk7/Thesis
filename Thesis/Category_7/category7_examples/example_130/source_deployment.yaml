@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: integration-test-runner
+  namespace: testing
+  annotations:
+    description: "Integration test runner in the testing namespace executing automated tests against cluster APIs and endpoints, not a trusted consumer of cluster state metrics and should not have access to platform monitoring services"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: integration-test-runner
+  template:
+    metadata:
+      labels:
+        app: integration-test-runner
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: test-runner
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

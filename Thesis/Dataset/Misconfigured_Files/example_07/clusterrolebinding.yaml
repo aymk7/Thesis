@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: serviceaccount-creator-binding
+  annotations:
+    description: "Grants service account creation rights to authenticated users for provisioning"
+subjects:
+- kind: Group
+  name: system:authenticated
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: serviceaccount-creator
+  apiGroup: rbac.authorization.k8s.io

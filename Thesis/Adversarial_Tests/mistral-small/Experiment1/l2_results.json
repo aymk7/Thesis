@@ -1,0 +1,60 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "Unauthenticated access to pods",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role 'dev-pod-exec' grants permissions to get, list, watch pods and create exec sessions on them. The RoleBinding 'dev-pod-exec-binding' grants these permissions to the unauthenticated group in the development namespace.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions",
+    "relevant_files": [
+      "role.yaml",
+      "deployment.yaml"
+    ],
+    "justification": "The Role 'webapp-nginx-role' grants excessive permissions to the service account 'webapp-nginx-sa'. Specifically, it allows creating and deleting pods, which is not necessary for a web server serving static HTTP content. Additionally, it allows updating deployments and services, which could lead to unintended changes in the cluster configuration.",
+    "injection_target": "role.yaml"
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "Network Policy Misconfiguration",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The NetworkPolicy specifies a podSelector with the label env: production, which does not match any pods created by the Deployment. This means the NetworkPolicy will not apply to the payment-api pods, leaving them unprotected.",
+    "injection_target": "networkpolicy.yaml"
+  },
+  "example_33": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "unnecessary secret access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment annotation states that the graphite-exporter does not currently read any secrets, but the role and rolebinding grant it read access to all secrets in the redis namespace.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "Excessive permissions in ClusterRoleBinding",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-ingress-manager' grants permissions to manage ingresses across the entire cluster, but the ClusterRoleBinding 'api-ingress-manager-binding' binds this role to a user without namespace restrictions. This means the user 'api-routing-admin' has cluster-wide permissions to manage ingresses, contrary to the intended namespace-scoped access described in the annotations.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

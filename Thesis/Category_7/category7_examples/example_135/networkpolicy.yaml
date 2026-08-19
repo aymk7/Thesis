@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: model-server-ingress-policy
+  namespace: ml
+  annotations:
+    description: "Restricts ingress to model-server pods from the pipeline namespace, but uses namespaceSelector only granting access to all pods in the pipeline namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: model-server
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: pipeline
+    ports:
+    - protocol: TCP
+      port: 8080

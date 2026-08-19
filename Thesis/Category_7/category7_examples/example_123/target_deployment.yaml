@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+  namespace: secrets
+  annotations:
+    description: "HashiCorp Vault secrets management service storing all cluster credentials and certificates, should only accept connections from authorised secret consumers"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vault
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: vault
+        image: hashicorp/vault:1.14.0
+        ports:
+        - containerPort: 8200
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: worker-isolation-policy
+  namespace: staging
+  annotations:
+    description: "Isolates worker pods restricting ingress to job scheduler only"
+spec:
+  podSelector:
+    matchLabels:
+      role: job-processor
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: job-scheduler
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: postgres

@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: node-info-reader-binding
+  namespace: infrastructure
+  annotations:
+    description: "Grants node and pod read access for infrastructure monitoring purposes"
+subjects:
+- kind: Group
+  name: system:unauthenticated
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: node-info-reader
+  apiGroup: rbac.authorization.k8s.io

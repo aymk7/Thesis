@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ops-role-manager-binding
+  namespace: ops
+  annotations:
+    description: "Binds the ops role manager to the ops automation service account"
+subjects:
+- kind: ServiceAccount
+  name: ops-automation-sa
+  namespace: ops
+roleRef:
+  kind: Role
+  name: ops-role-manager
+  apiGroup: rbac.authorization.k8s.io

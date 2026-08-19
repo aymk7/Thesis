@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-workload
+  namespace: dev
+  annotations:
+    description: "Development namespace contains experimental workloads and prototype services under active development with relaxed security controls, granting all dev pods access to the infrastructure Prometheus server exposes sensitive performance metrics and service topology to unreviewed code"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dev-workload
+  template:
+    metadata:
+      labels:
+        app: dev-workload
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: dev-app
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

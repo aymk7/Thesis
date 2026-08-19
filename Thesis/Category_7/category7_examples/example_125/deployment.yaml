@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jupyter
+  namespace: ml
+  annotations:
+    description: "Jupyter notebook server for machine learning experimentation containing sensitive model weights and research data"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jupyter
+  template:
+    metadata:
+      labels:
+        app: jupyter
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: jupyter
+        image: jupyter/scipy-notebook:latest
+        ports:
+        - containerPort: 8888
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

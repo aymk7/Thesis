@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: nginx-configmap-reader
+  namespace: webapp
+  annotations:
+    description: "Grants nginx read access to configmaps only for configuration loading"
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]

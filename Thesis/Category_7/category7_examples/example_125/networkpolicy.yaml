@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: jupyter-ingress-policy
+  namespace: ml
+  annotations:
+    description: "Restricts ingress to jupyter pods from the data namespace, but uses namespaceSelector only granting access to all pods in the data namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: jupyter
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: data
+    ports:
+    - protocol: TCP
+      port: 8888

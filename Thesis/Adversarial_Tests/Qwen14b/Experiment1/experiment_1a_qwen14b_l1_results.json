@@ -1,0 +1,63 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "Unrestricted access to development namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The RoleBinding grants the 'system:unauthenticated' group, which includes unauthenticated users, full exec and log access into pods within the 'development' namespace. This allows anyone without authentication to execute commands inside development environment pods and view logs, posing a significant security risk.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "Excessive RBAC Permissions",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role defined in 'role.yaml' grants excessive permissions to the service account 'webapp-nginx-sa'. Specifically, it allows verbs like 'create', 'update', and 'delete' on pods and deployments which are broader than necessary for a simple web server deployment. This could potentially allow the nginx application to perform actions beyond its intended scope.",
+    "injection_target": "role.yaml"
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "Inadequate Network Policy Enforcement",
+    "relevant_files": [
+      "networkpolicy.yaml",
+      "deployment.yaml"
+    ],
+    "justification": "The network policy 'payment-api-policy' in the payments namespace restricts ingress and egress traffic for pods labeled with app: payment-api and env: production. However, it does not enforce the 'env: production' label on the deployment of the payment API service itself, which means that non-production environments (e.g., development or staging) would lack this network policy enforcement despite being deployed in the same namespace.",
+    "injection_target": "networkpolicy.yaml"
+  },
+  "example_33": {
+    "verdict": "misconfigured",
+    "category": "Overprivileged Service Account",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The service account 'api-gateway-sa' in namespace 'webapp' is granted the ClusterRole 'api-gateway-impersonator', which includes impersonation permissions for users and service accounts. This allows the API gateway to potentially act as any user or service account within the cluster, leading to a significant security risk if the API gateway's implementation has vulnerabilities.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary Secret Access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml file specifies that the graphite-exporter does not require credentials or secrets currently. However, the role.yaml and rolebinding.yaml files grant read access to all secrets in the redis namespace to the service account associated with the graphite-exporter deployment. This permission is unnecessary given the current requirements of the application and poses a security risk by allowing potential future misuse.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "ClusterRole with overly broad permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-ingress-manager' grants the user 'api-routing-admin' full access to create, update and manage ingresses across all namespaces. This is contrary to the intended purpose of restricting such actions only within a specific namespace (the 'api' namespace). Using a ClusterRole instead of a Namespace-scoped Role means that these permissions are not confined to any particular namespace, leading to potential security risks.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

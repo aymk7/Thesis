@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ml-job-reader-binding
+  namespace: ml
+  annotations:
+    description: "Binds job read access to the ML team within the ml namespace only"
+subjects:
+- kind: Group
+  name: ml-team
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: ml-job-reader
+  apiGroup: rbac.authorization.k8s.io

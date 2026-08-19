@@ -1,0 +1,57 @@
+{
+  "example_53": {
+    "verdict": "misconfigured",
+    "category": "Least Privilege Violation (RBAC)",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'nginx-webserver' Deployment (deployment.yaml) explicitly states in its annotation that it is a 'Nginx static web server - reads configmap for configuration, no other API access needed'. This indicates a requirement for minimal API access, specifically for reading configuration from a ConfigMap. However, the 'nginx-configmap-reader' Role (role.yaml), which is bound to the 'nginx-sa' ServiceAccount used by the Deployment (rolebinding.yaml), grants 'get', 'list', and 'watch' verbs on 'configmaps'. While 'get' is necessary for reading a specific ConfigMap, 'list' (to enumerate all ConfigMaps in the namespace) and 'watch' (to monitor changes to all ConfigMaps) are typically not required for a static web server whose primary function is to read its configuration. Granting these additional permissions violates the principle of least privilege, as the service account has broader access than explicitly stated as 'needed' by the deployment's annotation.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_58": {
+    "verdict": "misconfigured",
+    "category": "RBAC Privilege Escalation / Arbitrary Code Execution",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'cicd-deployer' Role, defined in 'role.yaml', grants 'update' and 'patch' verbs on 'deployments' within the 'cicd' namespace. This Role is bound to the 'pipeline-sa' ServiceAccount in the 'cicd' namespace via 'rolebinding.yaml'.\n\nThis combination of permissions allows the 'pipeline-sa' (and any process using it, such as a CI/CD pipeline) to modify any existing Deployment in the 'cicd' namespace. This is a significant security weakness for two main reasons:\n\n1.  **Arbitrary Code Execution:** By modifying a Deployment, the 'pipeline-sa' can change the container image, command, or arguments of the pods managed by that Deployment. This effectively grants the 'pipeline-sa' the ability to execute arbitrary code within the 'cicd' namespace, which can lead to full compromise of applications running there.\n\n2.  **Potential Privilege Escalation:** The 'update'/'patch' permission on Deployments also allows modification of the 'spec.template.spec.serviceAccountName' field. This means 'pipeline-sa' could change a Deployment to run its pods using a different ServiceAccount within the 'cicd' namespace. If there were another ServiceAccount in the 'cicd' namespace with higher privileges (e.g., the default ServiceAccount, which often has broader permissions), 'pipeline-sa' could escalate its privileges by making a Deployment run with that more privileged ServiceAccount. While the provided files do not explicitly show a more privileged ServiceAccount, the capability for this type of escalation is present, and the 'TODO' annotation in 'role.yaml' explicitly highlights concern about the scope of these permissions.",
+    "injection_target": "role.yaml"
+  },
+  "example_65": {
+    "verdict": "misconfigured",
+    "category": "Over-privileged RBAC",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'fluentd-metadata-reader' grants cluster-wide read access ('get', 'list', 'watch') to 'pods' and 'namespaces'. This ClusterRole is then bound to the 'fluentd-sa' service account in the 'logging' namespace via ClusterRoleBinding 'fluentd-metadata-reader-binding'. While logging agents often require access to pod and namespace metadata, granting cluster-wide read access to *all* pods and namespaces to a single service account is a broad permission that violates the principle of least privilege. If the Fluentd deployment is not truly cluster-wide or does not require metadata from all namespaces, this permission could be narrowed to a namespace-scoped Role or a more restricted ClusterRole to reduce the attack surface in case the service account is compromised. The annotation in 'rolebinding.yaml' also explicitly highlights this broad scope as a potential concern.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_73": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The configuration correctly implements the principle of least privilege for secret access. The 'mysql-db' deployment uses the 'mysql-sa' service account. The 'mysql-secret-reader' Role grants 'get' access *only* to the 'mysql-credentials' secret, explicitly using 'resourceNames'. This Role is then bound *only* to the 'mysql-sa' service account. This ensures that the MySQL database can only access its designated credentials secret and no other secrets or resources, preventing unauthorized secret exposure.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_117": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The `ClusterRole` `logging-configmap-reader` grants read-only access to configmaps cluster-wide. However, the `RoleBinding` `logging-configmap-reader-binding` is namespace-scoped (in the `logging` namespace) and binds this `ClusterRole` to the `logging-team` group. In Kubernetes RBAC, when a `ClusterRole` is bound by a `RoleBinding` (which is namespace-scoped), the permissions granted by the `ClusterRole` are effectively limited to the namespace where the `RoleBinding` exists. Therefore, the `logging-team` will only have read access to configmaps within the `logging` namespace. This aligns with the explicit intention stated in the `RoleBinding`'s annotation: 'Binds configmap read access to the logging team within the logging namespace only'. While the `TODO` comment in the `RoleBinding` indicates a potential uncertainty about this behavior, the actual configuration correctly implements the stated namespace-scoped access, preventing unintended cluster-wide privileges. No security misconfiguration leading to over-privilege is present.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_118": {
+    "verdict": "misconfigured",
+    "category": "Over-privileged RBAC",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The `rolebinding.yaml` creates a RoleBinding in the `cicd` namespace that references a `ClusterRole` named `cicd-deployment-reader` defined in `clusterrole.yaml`. While the RoleBinding itself is namespace-scoped, binding a subject to a `ClusterRole` grants the permissions defined in that ClusterRole *cluster-wide*, regardless of the namespace where the RoleBinding is created. This means the `cicd-pipeline-operator` user will have `get`, `list`, `watch` access to deployments across *all* namespaces, not just within the `cicd` namespace as the RoleBinding's annotation implies was the intent. This is an over-privilege due to a misunderstanding of ClusterRole vs. Role scoping when used with RoleBindings.",
+    "injection_target": "rolebinding.yaml"
+  }
+}

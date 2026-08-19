@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: platform-role-binder-binding
+  annotations:
+    description: "Grants ClusterRole bind access to authenticated users for platform administration"
+subjects:
+- kind: Group
+  name: system:authenticated
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: platform-role-binder
+  apiGroup: rbac.authorization.k8s.io

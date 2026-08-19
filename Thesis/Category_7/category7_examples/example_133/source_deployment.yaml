@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compliance-scanner
+  namespace: audit
+  annotations:
+    description: "Compliance scanner in the audit namespace that performs automated security scans across cluster resources and generates compliance reports, not a trusted consumer of database backup data and should not have direct access to backup storage"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: compliance-scanner
+  template:
+    metadata:
+      labels:
+        app: compliance-scanner
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: scanner
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

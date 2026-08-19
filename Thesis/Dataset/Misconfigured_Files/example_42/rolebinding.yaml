@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: node-exporter-secret-reader-binding
+  namespace: monitoring
+  annotations:
+    description: "Binds the secret reader role to the node exporter service account"
+subjects:
+- kind: ServiceAccount
+  name: node-exporter-sa
+  namespace: monitoring
+roleRef:
+  kind: Role
+  name: monitoring-secret-reader
+  apiGroup: rbac.authorization.k8s.io

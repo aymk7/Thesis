@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: proxy-secret-reader
+  namespace: docs
+  annotations:
+    description: "Grants read access to secrets in the docs namespace for the Apache httpd workload"
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]

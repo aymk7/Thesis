@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: gateway
+  annotations:
+    description: "API gateway requiring access to its TLS certificate secret for HTTPS termination, mounted as a volume"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      serviceAccountName: api-gateway-sa
+      volumes:
+      - name: tls-cert
+        secret:
+          secretName: api-gateway-tls
+      containers:
+      - name: api-gateway
+        image: nginx:1.25.3
+        ports:
+        - containerPort: 443
+        volumeMounts:
+        - name: tls-cert
+          mountPath: /etc/nginx/tls
+          readOnly: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

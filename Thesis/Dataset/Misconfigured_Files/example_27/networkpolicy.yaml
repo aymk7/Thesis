@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: jenkins-ingress-policy
+  namespace: cicd
+  annotations:
+    description: "Restricts ingress to Jenkins pods from authorised build agents only"
+spec:
+  podSelector:
+    matchLabels:
+      app: jenkins-controller
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: build-agent

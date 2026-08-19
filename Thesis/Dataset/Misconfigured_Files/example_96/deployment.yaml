@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zap-scanner
+  namespace: testing
+  annotations:
+    description: "OWASP ZAP passive web application security scanner, no authentication credentials required"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zap-scanner
+  template:
+    metadata:
+      labels:
+        app: zap-scanner
+    spec:
+      serviceAccountName: zap-scanner-sa
+      containers:
+      - name: zap
+        image: ghcr.io/zaproxy/zaproxy:stable
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

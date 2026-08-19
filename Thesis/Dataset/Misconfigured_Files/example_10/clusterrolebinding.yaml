@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tenant-namespace-admin-binding
+  annotations:
+    description: "Grants full namespace admin rights to authenticated users for multi-tenant self-service"
+subjects:
+- kind: Group
+  name: system:authenticated
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: tenant-namespace-admin
+  apiGroup: rbac.authorization.k8s.io

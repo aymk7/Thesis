@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: logging
+  annotations:
+    description: "Elasticsearch cluster for storing and indexing application logs"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      serviceAccountName: elasticsearch-sa
+      containers:
+      - name: elasticsearch
+        image: elasticsearch:8.10.0
+        ports:
+        - containerPort: 9200
+        - containerPort: 9300
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

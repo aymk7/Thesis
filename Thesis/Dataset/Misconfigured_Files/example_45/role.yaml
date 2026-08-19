@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: metrics-secret-reader
+  namespace: metrics
+  annotations:
+    description: "Grants read access to secrets in the metrics namespace for the StatsD exporter workload"
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]

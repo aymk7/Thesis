@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caddy-frontend
+  namespace: frontend
+  annotations:
+    description: "Caddy web server serving pre-built React static assets over HTTP on port 80 only, no TLS configuration, no backend integration, no credentials required"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: caddy-frontend
+  template:
+    metadata:
+      labels:
+        app: caddy-frontend
+    spec:
+      serviceAccountName: caddy-sa
+      containers:
+      - name: caddy
+        image: caddy:2.7
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

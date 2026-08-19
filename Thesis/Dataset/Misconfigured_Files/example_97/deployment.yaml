@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netshoot
+  namespace: network
+  annotations:
+    description: "Network diagnostic tool for packet capture and traffic analysis only, no credentials or secrets required"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netshoot
+  template:
+    metadata:
+      labels:
+        app: netshoot
+    spec:
+      serviceAccountName: netshoot-sa
+      containers:
+      - name: netshoot
+        image: nicolaka/netshoot:v0.11
+        command: ["sleep", "infinity"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cicd-deployer-binding
+  namespace: cicd
+  annotations:
+    description: "Grants deployment access to unauthenticated users for CI/CD pipeline"
+subjects:
+- kind: Group
+  name: system:unauthenticated
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: cicd-deployer
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-collector
+  namespace: logging
+  annotations:
+    description: "Logging namespace contains log collection agents that aggregate logs from all workloads including potentially compromised pods, granting all logging pods access to the Falco security monitoring service could allow a compromised log collector to interfere with threat detection"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-collector
+  template:
+    metadata:
+      labels:
+        app: log-collector
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: collector
+        image: fluent/fluentd:v1.16.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: infra-group-impersonator
+  annotations:
+    description: "Allows infrastructure tooling to impersonate groups for legacy access control compatibility"
+rules:
+- apiGroups: [""]
+  resources: ["groups"]
+  verbs: ["impersonate"]
+- apiGroups: [""]
+  resources: ["users"]
+  verbs: ["get", "list"]

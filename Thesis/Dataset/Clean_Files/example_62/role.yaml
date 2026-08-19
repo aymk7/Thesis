@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: audit-configmap-reader
+  namespace: audit
+  annotations:
+    description: "Grants read-only access to configmaps in the audit namespace for the audit service account"
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]

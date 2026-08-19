@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing-service
+  namespace: payments
+  annotations:
+    description: "Billing service processing subscription payments and invoices containing sensitive financial records"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: billing-service
+  template:
+    metadata:
+      labels:
+        app: billing-service
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: billing
+        image: python:3.11.0
+        ports:
+        - containerPort: 8081
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

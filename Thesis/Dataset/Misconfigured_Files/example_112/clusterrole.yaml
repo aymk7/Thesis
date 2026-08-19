@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dev-cronjob-manager
+  annotations:
+    description: "Intended to grant CronJob create and delete access within the dev namespace only for the developer team"
+rules:
+- apiGroups: ["batch"]
+  resources: ["cronjobs"]
+  verbs: ["get", "list", "create", "delete", "watch"]

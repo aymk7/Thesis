@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: staging
+  annotations:
+    description: "Background worker processing asynchronous jobs from the task queue"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      role: worker
+  template:
+    metadata:
+      labels:
+        role: worker
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: worker
+        image: python:3.11-slim
+        command: ["python", "worker.py"]
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"

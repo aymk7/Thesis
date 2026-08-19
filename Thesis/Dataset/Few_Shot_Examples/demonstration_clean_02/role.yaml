@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: smtp-mailer-secret-reader
+  namespace: notifications
+  annotations:
+    description: "Grants read access to the smtp-credentials secret only for authenticated email delivery"
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+  resourceNames: ["smtp-credentials"]

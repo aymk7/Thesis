@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-agent
+  namespace: cicd
+  annotations:
+    description: "CI/CD namespace contains Jenkins build agents that execute arbitrary code from source repositories including third-party dependencies and untrusted pull requests, granting all CI/CD pods access to the production MySQL database creates a direct path from untrusted build code to production data"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: jenkins-agent
+  template:
+    metadata:
+      labels:
+        app: jenkins-agent
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: agent
+        image: jenkins/inbound-agent:latest
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

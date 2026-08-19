@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: privileged-workload-deployer
+  annotations:
+    description: "ClusterRole granting broad workload deployment permissions across the cluster"
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments", "daemonsets", "statefulsets"]
+  verbs: ["get", "list", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["pods", "secrets", "serviceaccounts"]
+  verbs: ["get", "list", "create", "delete"]

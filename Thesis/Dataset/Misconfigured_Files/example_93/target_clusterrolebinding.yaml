@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cluster-admin-sa-binding
+  annotations:
+    description: "Grants cluster-admin privileges to the cluster provisioner service account"
+subjects:
+- kind: ServiceAccount
+  name: cluster-provisioner-sa
+  namespace: platform
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io

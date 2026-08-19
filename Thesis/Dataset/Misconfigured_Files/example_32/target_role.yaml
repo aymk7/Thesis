@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: monitoring-namespace-admin
+  namespace: monitoring
+  annotations:
+    description: "Full administrative access within the monitoring namespace"
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]

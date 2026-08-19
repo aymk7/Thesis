@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-webserver
+  namespace: webapp
+  annotations:
+    description: "Nginx static web server - reads configmap for configuration, no other API access needed"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx-webserver
+  template:
+    metadata:
+      labels:
+        app: nginx-webserver
+    spec:
+      serviceAccountName: nginx-sa
+      automountServiceAccountToken: nginx-sa
+      containers:
+      - name: nginx
+        image: nginx:1.25.3
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

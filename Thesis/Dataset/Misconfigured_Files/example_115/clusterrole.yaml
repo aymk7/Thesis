@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: data-deployment-deleter
+  annotations:
+    description: "Intended to grant deployment delete access within the data namespace only for the data platform operations team"
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "list", "delete"]

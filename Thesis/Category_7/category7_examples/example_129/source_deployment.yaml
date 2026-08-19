@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-sandbox
+  namespace: dev
+  annotations:
+    description: "Developer sandbox environment in the dev namespace running experimental and untested code by multiple developers, not a trusted consumer of production infrastructure metrics"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dev-sandbox
+  template:
+    metadata:
+      labels:
+        app: dev-sandbox
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: sandbox
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

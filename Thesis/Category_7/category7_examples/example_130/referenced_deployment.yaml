@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-runner
+  namespace: testing
+  annotations:
+    description: "Testing namespace contains automated test runners executing integration and load tests against multiple services, granting all test pods access to kube-state-metrics exposes full cluster topology and resource configuration data that could aid reconnaissance if a test runner is compromised"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: test-runner
+  template:
+    metadata:
+      labels:
+        app: test-runner
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: runner
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

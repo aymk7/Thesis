@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: search
+  annotations:
+    description: "Elasticsearch deployment - labels match the NetworkPolicy selector"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: elasticsearch
+        image: elasticsearch:8.9.0
+        ports:
+        - containerPort: 9200
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: log-collector-pod-reader
+  namespace: logging
+  annotations:
+    description: "Grants read-only access to pods in the logging namespace for the log collector to tag log entries with pod metadata"
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-react
+  namespace: frontend
+  annotations:
+    description: "React single-page application serving the user interface"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: frontend-react
+  template:
+    metadata:
+      labels:
+        app: frontend-react
+    spec:
+      serviceAccountName: frontend-react-sa
+      containers:
+      - name: react-app
+        image: node:20-alpine
+        ports:
+        - containerPort: 3000
+        command: ["node", "server.js"]
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"

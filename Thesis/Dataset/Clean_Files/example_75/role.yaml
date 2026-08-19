@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: queue-worker-secret-reader
+  namespace: workers
+  annotations:
+    description: "Grants queue worker read access to its RabbitMQ credentials secret only"
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+  resourceNames: ["rabbitmq-credentials"]

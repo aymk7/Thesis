@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: workflow-sa-impersonator-binding
+  annotations:
+    description: "Binds the service account impersonation role to the workflow engine service account"
+subjects:
+- kind: ServiceAccount
+  name: workflow-engine-sa
+  namespace: platform
+roleRef:
+  kind: ClusterRole
+  name: workflow-sa-impersonator
+  apiGroup: rbac.authorization.k8s.io

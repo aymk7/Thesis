@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jaeger-rolebinding
+  namespace: tracing
+  annotations:
+    description: "Binds the Jaeger service account to its role"
+subjects:
+- kind: ServiceAccount
+  name: jaeger-sa
+  namespace: tracing
+roleRef:
+  kind: Role
+  name: jaeger-role
+  apiGroup: rbac.authorization.k8s.io

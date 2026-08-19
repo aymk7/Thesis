@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: kube-state-metrics-ingress-policy
+  namespace: platform
+  annotations:
+    description: "Restricts ingress to kube-state-metrics pods from the testing namespace, but uses namespaceSelector only granting access to all pods in the testing namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: kube-state-metrics
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: testing
+    ports:
+    - protocol: TCP
+      port: 8080

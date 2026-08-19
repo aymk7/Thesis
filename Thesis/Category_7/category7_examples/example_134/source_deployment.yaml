@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: envoy-sidecar-injector
+  namespace: mesh
+  annotations:
+    description: "Envoy sidecar injector in the mesh namespace that intercepts and proxies all service-to-service traffic, has visibility into all cluster network flows and should not have direct access to the ingress controller management interface"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: envoy-sidecar-injector
+  template:
+    metadata:
+      labels:
+        app: envoy-sidecar-injector
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: envoy
+        image: envoyproxy/envoy:v1.27.0
+        ports:
+        - containerPort: 15010
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"

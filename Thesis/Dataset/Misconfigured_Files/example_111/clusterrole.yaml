@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ml-job-manager
+  annotations:
+    description: "Intended to grant job create and delete access within the ml namespace only for the ML pipeline operator"
+rules:
+- apiGroups: ["batch"]
+  resources: ["jobs"]
+  verbs: ["get", "list", "create", "delete", "watch"]

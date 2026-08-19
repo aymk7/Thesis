@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: blackbox-exporter-secret-reader-binding
+  namespace: probing
+  annotations:
+    description: "Binds the secret reader role to the blackbox exporter service account"
+subjects:
+- kind: ServiceAccount
+  name: blackbox-exporter-sa
+  namespace: probing
+roleRef:
+  kind: Role
+  name: probing-secret-reader
+  apiGroup: rbac.authorization.k8s.io

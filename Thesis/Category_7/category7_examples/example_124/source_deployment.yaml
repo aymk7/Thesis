@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: load-test-runner
+  namespace: staging
+  annotations:
+    description: "Load testing tool in the staging namespace that generates high-volume synthetic traffic against API endpoints, not a trusted production workload and should not have access to live production services"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: load-test-runner
+  template:
+    metadata:
+      labels:
+        app: load-test-runner
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: load-tester
+        image: grafana/k6:latest
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "200m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"

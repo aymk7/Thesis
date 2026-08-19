@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sandbox-app
+  namespace: sandbox
+  annotations:
+    description: "Experimental sandbox application in the sandbox namespace running unreviewed third-party code for evaluation purposes, not a trusted consumer of production session data and should not have access to live cache"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sandbox-app
+  template:
+    metadata:
+      labels:
+        app: sandbox-app
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: sandbox
+        image: node:20-alpine
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

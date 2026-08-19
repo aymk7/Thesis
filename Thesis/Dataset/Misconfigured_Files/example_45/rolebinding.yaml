@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: prometheus-secret-reader-binding
+  namespace: metrics
+  annotations:
+    description: "Binds the secret reader role to the StatsD exporter service account"
+subjects:
+- kind: ServiceAccount
+  name: prometheus-sa
+  namespace: metrics
+roleRef:
+  kind: Role
+  name: metrics-secret-reader
+  apiGroup: rbac.authorization.k8s.io

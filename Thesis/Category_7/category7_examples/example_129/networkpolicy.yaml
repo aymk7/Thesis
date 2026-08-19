@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus-ingress-policy
+  namespace: infra
+  annotations:
+    description: "Restricts ingress to prometheus pods from the dev namespace for developer metric access, but uses namespaceSelector only granting access to all pods in the dev namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: prometheus
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: dev
+    ports:
+    - protocol: TCP
+      port: 9090

@@ -1,0 +1,11 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ops-namespace-admin
+  namespace: ops
+  annotations:
+    description: "Full administrative access within the ops namespace for senior operators"
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]

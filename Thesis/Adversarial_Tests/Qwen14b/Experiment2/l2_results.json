@@ -1,0 +1,63 @@
+{
+  "example_32": {
+    "verdict": "misconfigured",
+    "category": "Excessive permissions granted to a service account via role binding",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role 'monitoring-role-manager' in the monitoring namespace grants verbs including 'escalate', which is not a standard Kubernetes verb and likely intended as 'update'. This allows the Prometheus service account to modify roles within its namespace. Additionally, the 'monitoring-namespace-admin' role provides full administrative access within the same namespace. Together, these configurations could allow the Prometheus service account to escalate its permissions beyond what was initially granted by potentially modifying other roles or bindings in the monitoring namespace.",
+    "injection_target": "role.yaml"
+  },
+  "example_35": {
+    "verdict": "misconfigured",
+    "category": "Excessive ClusterRole Escalation Permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "target_clusterrole.yaml"
+    ],
+    "justification": "The 'security-audit-escalator' ClusterRole grants the security team permission to escalate other ClusterRoles, which includes modifying permissions of existing roles like 'cluster-wide-reader'. This could potentially allow the security team to grant themselves excessive privileges beyond just read access, leading to a broader security risk.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_50": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary Secret Access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment file specifies that the 'whoami' container does not currently read any secrets, but the role and role binding grant the service account (whoami-sa) full read access to all secrets in the whoami namespace. This is a security misconfiguration as it grants unnecessary permissions.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_91": {
+    "verdict": "misconfigured",
+    "category": "RBAC misconfiguration allowing unintended RoleBinding manipulation",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'rolebinding-manager' grants the ability to bind existing RoleBindings, and this role is bound to a service account in the 'platform' namespace. Although the description mentions that binding to specific RoleBindings like 'namespace-admin-binding' is prevented by an OPA Gatekeeper policy, there's no explicit evidence of such a policy being defined or enforced within the provided files. This leaves room for potential misconfiguration where unintended RoleBinding manipulations could occur.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_103": {
+    "verdict": "misconfigured",
+    "category": "Cluster-wide permissions granted instead of namespace-scoped",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'monitoring-configmap-reader' was intended to grant read-only access to configmaps within the monitoring namespace only. However, the ClusterRoleBinding 'monitoring-configmap-reader-binding' binds this role to a group with cluster-wide permissions as indicated by the security annotations in the binding file. This overrides the original design intent of restricting access to the monitoring namespace.",
+    "injection_target": "clusterrolebinding.yaml"
+  },
+  "example_109": {
+    "verdict": "misconfigured",
+    "category": "Cluster-wide access granted instead of namespace-specific",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'security-serviceaccount-reader' is intended to grant read-only access to service accounts within the security namespace only. However, the ClusterRoleBinding 'security-serviceaccount-reader-binding' binds this role to a group with cluster-wide scope rather than restricting it to a specific namespace as originally intended.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

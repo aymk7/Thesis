@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: memcached-rolebinding
+  namespace: caching
+  annotations:
+    description: "Binds the Memcached service account to its role"
+subjects:
+- kind: ServiceAccount
+  name: memcached-sa
+  namespace: caching
+roleRef:
+  kind: Role
+  name: memcached-role
+  apiGroup: rbac.authorization.k8s.io

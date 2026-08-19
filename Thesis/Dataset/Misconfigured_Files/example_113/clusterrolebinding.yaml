@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: infra-role-reader-binding
+  annotations:
+    description: "Binds the infra role reader role to the infrastructure audit service account"
+subjects:
+- kind: ServiceAccount
+  name: infra-audit-sa
+  namespace: infra
+roleRef:
+  kind: ClusterRole
+  name: infra-role-reader
+  apiGroup: rbac.authorization.k8s.io

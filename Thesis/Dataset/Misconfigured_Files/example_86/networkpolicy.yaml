@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: solr-isolation-policy
+  namespace: search
+  annotations:
+    description: "Restricts ingress to Solr pods in production environment only"
+spec:
+  podSelector:
+    matchExpressions:
+    - key: environment
+      operator: In
+      values:
+      - production
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: search-api
+    ports:
+    - protocol: TCP
+      port: 8983

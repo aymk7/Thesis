@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audit-tool
+  namespace: audit
+  annotations:
+    description: "Audit namespace contains compliance scanning tools and third-party auditing agents with broad read access across the cluster, granting all audit tooling direct access to the backup database service goes beyond what compliance verification requires and risks backup data exfiltration"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: audit-tool
+  template:
+    metadata:
+      labels:
+        app: audit-tool
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: auditor
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

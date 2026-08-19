@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: debug-toolbox
+  namespace: backend
+  annotations:
+    description: "Privileged debug toolbox deployment in the backend namespace containing network diagnostic tools and broad cluster access capabilities, not a trusted application workload"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: debug-toolbox
+  template:
+    metadata:
+      labels:
+        app: debug-toolbox
+    spec:
+      containers:
+      - name: debug
+        image: nicolaka/netshoot:v0.11
+        command: ["sleep", "infinity"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

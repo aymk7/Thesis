@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: billing-service-ingress-policy
+  namespace: payments
+  annotations:
+    description: "Restricts ingress to billing-service pods from the api namespace, but uses namespaceSelector only granting access to all pods in the api namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: billing-service
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: api
+    ports:
+    - protocol: TCP
+      port: 8081

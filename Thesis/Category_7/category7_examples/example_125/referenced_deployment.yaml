@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-pipeline
+  namespace: data
+  annotations:
+    description: "Data namespace contains multiple pipeline components including ingestion workers and transformation jobs that process untrusted external data, granting all data pods access to the Jupyter notebook server exposes research environments to potentially malicious data payloads"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: data-pipeline
+  template:
+    metadata:
+      labels:
+        app: data-pipeline
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: pipeline
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

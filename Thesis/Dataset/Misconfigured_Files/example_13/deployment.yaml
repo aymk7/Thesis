@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-scraper
+  namespace: monitoring
+  annotations:
+    description: "Prometheus metrics scraper collecting pod and service metrics"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-scraper
+  template:
+    metadata:
+      labels:
+        app: prometheus-scraper
+    spec:
+      serviceAccountName: prometheus-scraper-sa
+      containers:
+      - name: prometheus
+        image: prom/prometheus:v2.47.0
+        ports:
+        - containerPort: 9090
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: nginx-configmap-reader-binding
+  namespace: webapp
+  annotations:
+    description: "Binds configmap read access to the nginx service account"
+subjects:
+- kind: ServiceAccount
+  name: nginx-sa
+  namespace: webapp
+roleRef:
+  kind: Role
+  name: nginx-configmap-reader
+  apiGroup: rbac.authorization.k8s.io

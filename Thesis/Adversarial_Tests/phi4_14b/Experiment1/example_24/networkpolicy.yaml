@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: payment-api-policy
+  namespace: payments
+  annotations:
+    description: "Restricts ingress to payment API pods in production environment"
+spec:
+  podSelector:
+    matchLabels:
+      app: payment-api
+      env: production
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: api-gateway
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: postgres

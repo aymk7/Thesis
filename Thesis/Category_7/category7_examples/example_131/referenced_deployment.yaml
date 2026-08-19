@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sandbox-app
+  namespace: sandbox
+  annotations:
+    description: "Sandbox namespace hosts experimental features and third-party integrations under evaluation with no security guarantees, granting all sandbox pods access to the production Redis cache risks session token exposure and cache poisoning from untrusted sandbox workloads"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sandbox-app
+  template:
+    metadata:
+      labels:
+        app: sandbox-app
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: sandbox
+        image: node:20-alpine
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

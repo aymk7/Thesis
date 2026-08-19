@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: statsd-exporter
+  namespace: metrics
+  annotations:
+    description: "Prometheus StatsD exporter receiving StatsD metrics over UDP and exposing them as Prometheus metrics, no credentials or secrets required"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: statsd-exporter
+  template:
+    metadata:
+      labels:
+        app: statsd-exporter
+    spec:
+      serviceAccountName: prometheus-sa
+      containers:
+      - name: statsd-exporter
+        image: prom/statsd-exporter:v0.26.0
+        ports:
+        - containerPort: 9102
+        - containerPort: 9125
+          protocol: UDP
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

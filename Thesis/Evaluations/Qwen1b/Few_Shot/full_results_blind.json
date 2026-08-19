@@ -1,0 +1,1152 @@
+{
+  "example_01": {
+    "verdict": "misconfigured",
+    "category": "Overly broad RBAC binding to authenticated users",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, create, delete, and watch permissions on pods in the webapp namespace. The rolebinding.yaml binds this Role to system:authenticated, meaning any authenticated user can manage all pods in the webapp namespace. This misconfiguration is only visible by reading both files together: the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_02": {
+    "verdict": "misconfigured",
+    "category": "Overly broad RBAC binding to authenticated users for monitoring purposes",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants get, list, and watch permissions on all resources in the cluster (pods, nodes, services, endpoints, namespaces). The clusterrolebinding.yaml binds this ClusterRole to system:authenticated, meaning any authenticated user can now access these resources. This misconfiguration is only apparent by reading both files together \u2014 the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_03": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary deployment access for unauthenticated users in the CI/CD namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants create, list, update, and patch permissions on deployments. The rolebinding.yaml binds this Role to system:unauthenticated, meaning any unauthenticated user can perform these actions in the cicd namespace. This misconfiguration is only apparent by reading both files together \u2014 the role file alone does not reveal the dangerous verbs being granted, and the binding file alone does not reveal the sensitive permissions being bound."
+  },
+  "example_04": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for database operations",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, and watch permissions on all secrets in the database namespace. The rolebinding.yaml binds this Role to system:authenticated, meaning any authenticated user can read all secrets in the database namespace. This misconfiguration is only apparent by reading both files together \u2014 the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_05": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster-level RBAC binding to unauthenticated users",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants get, list, and watch permissions on nodes and persistent volumes. The clusterrolebinding.yaml binds this ClusterRole to system:unauthenticated, meaning any unauthenticated user \u2014 with no credentials at all \u2014 can access node information and persistent volume lists in the entire namespace. This misconfiguration is only apparent by reading both files together: the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_06": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions for non-admin users on sensitive resources",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants write access to configmaps and pods in the logging namespace. The rolebinding.yaml binds this Role to system:authenticated, meaning any authenticated user can now perform these operations on all resources within the logging namespace. This misconfiguration is only apparent by reading both files together \u2014 the role file alone does not reveal the dangerous permissions being granted, and the binding file alone does not restrict access to non-admin users."
+  },
+  "example_07": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to authenticated users",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants create, list, get, update, and patch permissions on serviceaccounts. The clusterrolebinding.yaml binds this ClusterRole to the system:authenticated group, meaning any authenticated user can now create new service accounts across the entire cluster. This misconfiguration is only apparent by reading both files together \u2014 the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary pod exec access for unauthenticated users in the development namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, and watch permissions on pods. The rolebinding.yaml binds this Role to system:unauthenticated, meaning any unauthenticated user \u2014 with no credentials at all \u2014 can perform pod exec operations in the development namespace. This misconfiguration is only apparent by reading both files together: the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_09": {
+    "verdict": "misconfigured",
+    "category": "Overly broad RBAC binding to authenticated users for network resources management",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, create, update, patch, and delete permissions on ingress resources and services/endpoints in the ingress-nginx namespace. The rolebinding.yaml binds this Role to system:authenticated, meaning any authenticated user can manage all network resources through the ingress-nginx cluster. This misconfiguration is only apparent by reading both files together \u2014 the role file alone does not reveal the dangerous verbs being granted, and the binding file alone does not restrict access to specific resources or types."
+  },
+  "example_10": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster-level RBAC granting full admin access to authenticated users across all namespaces and resources, including sensitive ones like secrets.",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants get, list, watch, create, update, patch, delete permissions on a wide range of Kubernetes resources. The rolebinding.yaml binds this ClusterRole to system:authenticated, meaning any authenticated user can access all these resources across the entire cluster. This misconfiguration is only apparent by reading both files together \u2014 the role alone does not reveal the dangerous permissions being granted, and the binding file alone does not show the sensitive nature of the resources involved."
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions on non-web applications",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a web application using Nginx, but the role and rolebinding grant it access to Kubernetes resources that are not necessary for its operation. Specifically, the role allows it to perform actions on pods (which is unnecessary), deployments (which is also unnecessary), services (which is irrelevant for a static HTTP server). The misconfiguration only becomes apparent by reading all four files together: the deployment establishes no legitimate need for these permissions, while the role and binding grant them anyway. This results in an overly broad RBAC setup that could potentially expose sensitive information or resources."
+  },
+  "example_12": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary role and rolebinding granting access to all Kubernetes resources in the caching namespace, including sensitive operations like creating and updating deployments.",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the Redis cache workload requires no specific permissions. However, both the role.yaml and rolebinding.yaml grant access to all Kubernetes resources in the caching namespace, including creating and updating deployments (which is a sensitive operation). The misconfiguration only becomes apparent by reading these files together: the service account mounted by the deployment has been granted exactly that level of access."
+  },
+  "example_13": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions on sensitive resources",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Prometheus metrics scraper workload running prom/prometheus:v2.47.0 and explicitly states it collects pod and service metrics. The role.yaml grants get, list, watch, and delete permissions on pods and services in the monitoring namespace. The rolebinding.yaml binds this Role to the prometheus-scraper-sa ServiceAccount mounted by the deployment. This misconfiguration is only apparent when reading all three files together: the workload needs access to pod and service metrics for its purpose, while the RBAC permissions are unnecessarily broad on sensitive resources."
+  },
+  "example_14": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions on services and endpoints, potentially exposing sensitive information",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a static file server workload running nginx:1.25 with specific resource requests and limits. The role.yaml grants get, list, create, update, patch, delete permissions on services and endpoints in the fileserver namespace. The rolebinding.yaml binds this Role to the fileserver-sa ServiceAccount, which is mounted by the deployment. This configuration exposes sensitive information about the workload's resources and potentially allows unauthorized access through these RBAC permissions."
+  },
+  "example_15": {
+    "verdict": "misconfigured",
+    "category": "Overly broad role and rolebinding granting access to all pods in the database namespace",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a PostgreSQL database workload running Postgres:15 with specific environment variables. The role.yaml grants get, list, create, update, patch, and delete permissions on all deployments in the database namespace, including pods that do not need these privileges for their intended purpose (e.g., postgres-sa). Similarly, the rolebinding.yaml binds this role to the postgres-sa ServiceAccount, which is mounted by the deployment. The misconfiguration only becomes apparent when reading all four files together: the workload needs access to specific resources but is granted permissions on everything in the database namespace, leading to unnecessary risk."
+  },
+  "example_16": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions on non-privileged resources",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml defines a React frontend application workload running node:20-alpine and explicitly states in its annotation that it serves the user interface. However, the role.yaml grants get, list, create, update, patch, delete permissions on services and endpoints within the namespace 'frontend', which are not necessary for this specific workload. Similarly, the rolebinding.yaml binds this role to the frontend-react-sa ServiceAccount, which is mounted by the deployment. The misconfiguration only becomes apparent when reading all three files together: the application has no legitimate need for these permissions on non-privileged resources, and the role and binding grant exactly that access."
+  },
+  "example_17": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions on non-privileged resources",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the nginx-proxy workload runs Nginx and requires access to pods, services, and deployments. However, the role.yaml grants get, list, watch, create, delete permissions on all these resources across multiple namespaces (proxy), while the rolebinding.yaml binds this role to a ServiceAccount named nginx-proxy-sa in the proxy namespace. This misconfiguration is only apparent when reading together: the workload needs access to pods and services but does not require any of the other permissions granted by the role, which are unnecessary for its purpose."
+  },
+  "example_18": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary role and rolebinding granting access to sensitive resources without proper scope or necessity",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines an Elasticsearch cluster for storing application logs. The role.yaml grants get, list, create, update, patch, and delete permissions on persistent volume claims, deployments, statefulsets, pods, and the entire namespace. The rolebinding.yaml binds this role to the elasticsearch-sa ServiceAccount, which is mounted by the deployment. This configuration allows any user with access to the service account to perform all these operations across the cluster, including accessing sensitive resources like persistent volume claims and creating new deployments or statefulsets within the logging namespace. This misconfiguration is only apparent when reading all four files together: the workload legitimately needs access for log storage but does not require permissions on other resources without proper scope."
+  },
+  "example_19": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions on a service account, leading to potential misconfiguration of Kubernetes services and deployments.",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the RabbitMQ workload requires access to various resources such as pods, services, and deployments. The role.yaml grants permissions on these resources without any specific scope or reason. Similarly, the rolebinding.yaml binds this role to a service account (rabbitmq-sa), which is mounted by the deployment. This misconfiguration allows unauthorized users with the service account to perform actions that are not necessary for the workload's operation, potentially leading to security risks."
+  },
+  "example_20": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions on non-metric resources",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml defines a static Nginx metrics exporter workload that exposes basic HTTP metrics endpoints. However, the role.yaml grants get, list, watch, update, patch, and delete permissions on all resources in the exports namespace, including pods and services. The rolebinding.yaml binds this role to the nginx-exporter-sa ServiceAccount, which is mounted by the deployment. This misconfiguration allows any user with access to the service account to perform operations that are not necessary for monitoring metrics \u2014 potentially exposing sensitive information or causing unintended side effects."
+  },
+  "example_21": {
+    "verdict": "misconfigured",
+    "category": "Insecure network policy allowing pods with a specific label to access the frontend deployment",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The networkpolicy.yaml restricts traffic only to pods labeled 'role: ingress-controller'. The deployment.yaml specifies that the frontend application runs on pods labeled 'app: frontend', which includes both frontend and ingress controller pods. This misconfiguration allows any pod with a label of 'role' (which could be anything) to access the frontend, potentially exposing it to unintended traffic or vulnerabilities."
+  },
+  "example_22": {
+    "verdict": "misconfigured",
+    "category": "Insecure network policy for database pods",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the postgres pod should be isolated from unauthorised ingress traffic. However, the networkpolicy.yaml allows all pods in the namespace to access the postgres pod via both ingress and egress rules. This misconfiguration is only apparent when reading both files together: the deployment file alone does not reveal the dangerous policy, and the networkpolicy file alone does not reveal the sensitive isolation being granted."
+  },
+  "example_23": {
+    "verdict": "misconfigured",
+    "category": "Insecure network policy for prometheus-scraper pods with uncontrolled traffic to other pods",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the Prometheus metrics scraper should run on port 9090. The networkpolicy.yaml restricts ingress traffic only to pods labeled 'role: metrics-consumer'. However, prometheus-scraper-policy is not restricted by any labels or annotations in the manifest files provided. This means that prometheus-scraper pods can potentially access other pods without explicit permission, which could lead to unintended network exposure and security risks."
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "Insecure Network Policy for Production Pods",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the payment-api pods are running in a production environment. The network policy.yaml restricts ingress to only those pods labeled with 'role: api-gateway'. This means any pod not explicitly labeled as such will be blocked from accessing the payment API, which is incorrect for a production environment where all pods should have unrestricted access. The misconfiguration becomes apparent when reading both files together \u2014 the deployment correctly labels the pods but the network policy incorrectly restricts them to only those pods with 'role: api-gateway'. This results in an insecure configuration that could potentially expose sensitive data or services."
+  },
+  "example_25": {
+    "verdict": "misconfigured",
+    "category": "Insecure network policy for Elasticsearch pods",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the Elasticsearch pod should be isolated from other pods in the logging namespace. However, the networkpolicy.yaml allows ingress traffic to any pod labeled with 'role: log-shipper', which includes the Elasticsearch pod itself. This misconfiguration is only apparent when reading both files together \u2014 the isolation policy alone does not prevent traffic to the Elasticsearch pod."
+  },
+  "example_26": {
+    "verdict": "misconfigured",
+    "category": "Insecure network policy for RabbitMQ pods",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the RabbitMQ pod should be isolated from other pods in the messaging namespace. However, the networkpolicy.yaml allows ingress and egress traffic to any pod with a label `app: worker`, which includes all workers within the same namespace as the RabbitMQ pod. This creates an insecure configuration where unauthorized access is possible through the network policy alone."
+  },
+  "example_27": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The deployment.yaml defines a Jenkins CI/CD controller named jenkins with specific annotations and resources. The networkpolicy.yaml restricts ingress to pods labeled 'role: build-agent' from the 'jenkins-controller' pod selector in the cicd namespace. Reading all four files together confirms that there are no security misconfigurations \u2014 each file is correctly scoped and does not reveal unnecessary permissions or interactions between unrelated resources."
+  },
+  "example_28": {
+    "verdict": "misconfigured",
+    "category": "Insecure Network Policy for a sensitive application",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the React single-page application (react-app) is running on port 3000 and requires access to the ingress controller. The network policy.yaml restricts traffic from the ingress controller, but it does not specify any specific pods or labels for the ingress controller. This means any pod in the frontend namespace can potentially be targeted by this policy, which could lead to unintended exposure of sensitive information if the ingress controller is misconfigured or if there are other pods with similar requirements that were not considered."
+  },
+  "example_29": {
+    "verdict": "misconfigured",
+    "category": "Inadequate network policy for external traffic routing",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the API gateway pods should be accessible externally via port 80 and 443. However, the networkpolicy.yaml restricts ingress and egress to only allow traffic from pods labeled 'role: load-balancer' (which is not specified in the deployment) and pods labeled 'app: backend-service'. This results in a misconfiguration where external traffic can reach the API gateway but cannot be routed through any of its intended endpoints, leading to potential security vulnerabilities."
+  },
+  "example_30": {
+    "verdict": "misconfigured",
+    "category": "Insecure Network Policy for Job Scheduler Access",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the worker pods are part of a job-processor role. The network policy.yaml restricts ingress to only the podSelector matching 'app: job-scheduler', which is not appropriate for isolating workers from other jobs or services like PostgreSQL. This misconfiguration allows any pod in the staging namespace, including those with unrelated labels, to access the job scheduler pods, potentially exposing them to unauthorized traffic."
+  },
+  "example_31": {
+    "verdict": "misconfigured",
+    "category": "Overly broad ClusterRole granting full cluster administrative access to the platform engineering team",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants ClusterRole permissions on all resources and non-resource URLs, including non-existent ones. The clusterrolebinding.yaml binds this role to a ServiceAccount in the cicd namespace, which is not part of any resource or URL that would require such broad access. This misconfiguration only becomes apparent when reading both files together: the role file alone does not reveal the dangerous permissions being granted, and the binding file alone does not reveal the sensitive scope of the clusterrole."
+  },
+  "example_32": {
+    "verdict": "misconfigured",
+    "category": "Overly broad RBAC permissions for Prometheus service account",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, and escalate permissions on roles within the rbac.authorization.k8s.io API group. The rolebinding.yaml binds this Role to the prometheus-sa ServiceAccount in the monitoring namespace, which is expected for Prometheus monitoring purposes. However, the permissions granted are overly broad \u2014 they allow access to all resources across all APIs groups (including non-existent ones like `*`), verbs (`*`), and any actions (`*`). This misconfiguration only becomes apparent when reading both files together: the role alone does not reveal the dangerous scope of the permissions being granted, and the binding file alone does not indicate the sensitive nature of the permissions."
+  },
+  "example_33": {
+    "verdict": "misconfigured",
+    "category": "Overly broad impersonation role binding to a service account and user",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants impersonate permissions on users and serviceaccounts. The clusterrolebinding.yaml binds this ClusterRole to the api-gateway-sa ServiceAccount, which is also bound to the platform-admin user via the roleRef in the target_clusterrolebinding.yaml file. This creates a misconfiguration where an unprivileged user can impersonate any authenticated user or service account within the webapp namespace, potentially leading to unauthorized access and privilege escalation. The misconfiguration only becomes apparent by reading all three files together."
+  },
+  "example_34": {
+    "verdict": "misconfigured",
+    "category": "Overly broad RBAC permissions for automation tools",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml",
+      "target_role.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, create, update, patch, delete permissions on deployments, replicasets, statefulsets, pods, services, and configmaps in the devops namespace. The rolebinding.yaml binds this Role to a User named devops-automation-user within the same namespace. This configuration allows any user with that name access to all resources across multiple namespaces \u2014 including sensitive ones like secrets and persistent volumes. The misconfiguration is only apparent by reading these files together: the target_role.yaml establishes the need for broad permissions, while the rolebinding binds them to a specific user without proper scope."
+  },
+  "example_35": {
+    "verdict": "misconfigured",
+    "category": "Cluster role with overly broad permissions to all resources and URLs, potentially exposing sensitive information or unauthorized access.",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants ClusterRole permissions to all resources and non-resource URL types. The clusterrolebinding.yaml binds this role to the security-team group, which is a service account that does not have any specific resource access requirements. This results in an overly broad permission exposure across all Kubernetes resources and URLs, potentially exposing sensitive information or unauthorized access."
+  },
+  "example_36": {
+    "verdict": "misconfigured",
+    "category": "Service account impersonation role bound to a service account with full cluster administrative access",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants impersonate and get permissions on all service accounts. The clusterrolebinding.yaml binds this ClusterRole to the workflow-engine-sa ServiceAccount, which is a high-privilege service account used by the platform's cluster provisioning system. This misconfiguration allows any user with access to the workflow engine to impersonate any other service account in the cluster, including those with full administrative privileges (cluster-admin). The misconfiguration only becomes apparent when reading both files together: the role alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_37": {
+    "verdict": "misconfigured",
+    "category": "Overly broad ClusterRole and ClusterRoleBinding granting full administrative access to the platform automation service account, which is not necessary for RBAC management tasks.",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants get, list, watch, create, update, patch, delete permissions on all resources and non-resource URLs. The clusterrolebinding.yaml binds this ClusterRole to the platform-automation-sa ServiceAccount, which is not a service account for any specific workload or resource management task but rather an automation service account with full administrative access. This misconfiguration only becomes apparent by reading both files together: the role alone does not reveal the dangerous permissions being granted, and the binding file alone does not restrict them to the intended use case."
+  },
+  "example_38": {
+    "verdict": "misconfigured",
+    "category": "Impersonation misconfiguration for system:masters group",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml",
+      "target_clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants impersonate access to groups. The clusterrolebinding.yaml binds this role to the infrastructure automation user, which is a User resource in RBAC terminology. The target_clusterrolebinding.yaml then explicitly binds system:masters to cluster-admin via a ClusterRoleBinding that can be recreated by any holder of the binding. This creates an irreversibly misconfigured impersonation misconfiguration where anyone with the binding can impersonate system:masters, potentially gaining full cluster access without needing to recreate the binding. The misconfiguration is only apparent when reading all three files together."
+  },
+  "example_39": {
+    "verdict": "misconfigured",
+    "category": "Overly broad ClusterRole granting permissions to all workloads across the cluster",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, create, update, patch, delete permissions on deployments and daemonsets in apps. The rolebinding.yaml binds this ClusterRole to the platform-engineers group, which means any user or service within the cluster can now perform these actions across all workloads without needing a specific role binding. This misconfiguration is only apparent by reading both files together: the role alone does not reveal the sensitive permissions being granted, and the binding file alone does not restrict access to just the intended resources."
+  },
+  "example_40": {
+    "verdict": "misconfigured",
+    "category": "Overly broad ClusterRole and ClusterRoleBinding granting full administrative access to tenant-provisioner-sa service account",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants get, list, watch, create, update, patch, delete permissions on all resources in the rbac.authorization.k8s.io API group. The clusterrolebinding.yaml binds this ClusterRole to the tenant-provisioner-sa ServiceAccount within the tenants namespace only. This misconfiguration is visible by reading both files together: the role file alone does not reveal the dangerous service account, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_41": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a static web server",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines the webapp-nginx workload running Nginx:1.25 and explicitly states it serves pre-built static HTML files with no backend or credentials required. However, the role.yaml grants get, list, and watch permissions on all secrets in the webapp namespace, and the rolebinding.yaml binds this role to the webapp-nginx-sa ServiceAccount, which is mounted by the deployment. The misconfiguration only becomes apparent when reading all four files together: the workload has no legitimate need for secret access, while the role and binding grant it exactly that."
+  },
+  "example_42": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for non-privileged workloads",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Prometheus node exporter workload that exposes host-level hardware and OS metrics. The role.yaml grants read access to all secrets in the monitoring namespace, while the rolebinding.yaml binds this role to the service account mounted by the deployment. This misconfiguration is only apparent when reading all four files together: the workload needs no secret access for its purpose, but the role and binding grant it exactly that."
+  },
+  "example_43": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for unauthenticated service",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Prometheus blackbox exporter workload running prom/blackbox-exporter:0.24.0 and explicitly states it probes unauthenticated public HTTP and ICMP endpoints only, no configSecret or credential volume mounts used, and no authentication credentials required. However, the role.yaml grants get access to all secrets in the probing namespace via resourceNames scoping. The rolebinding.yaml binds this role to the blackbox-exporter-sa ServiceAccount which is the same ServiceAccount mounted by the deployment. Reading all four files together confirms that the secret access is unnecessary and improperly scoped \u2014 the workload legitimately needs no secrets for unauthenticated probing, and the binding restricts it to exactly those."
+  },
+  "example_44": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a service that does not require it",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml defines the Memcached workload and explicitly states it requires no Kubernetes secrets. However, the role.yaml grants read access to all secrets in the caching namespace via resourceNames scoping. The rolebinding.yaml binds this role to the memcached-sa ServiceAccount which is mounted by the deployment. Reading all four files together confirms that the secret access is unnecessary for a service that does not require it."
+  },
+  "example_45": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for Prometheus Metrics Exporter",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a StatsD exporter workload running prom/statsd-exporter:v0.26.0 and explicitly states it requires no credentials or secrets for Prometheus metrics exposure. However, the role.yaml grants read access to all secrets in the metrics namespace via resource scoping. The rolebinding.yaml binds this role to the prometheus-sa ServiceAccount which is mounted by the deployment. Reading all four files together confirms that the workload does not need any secret access and the binding incorrectly grants it."
+  },
+  "example_46": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for web application",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Caddy static file server workload running on port 80, serving pre-built React static assets. The role.yaml grants read access to all secrets in the frontend namespace, and the rolebinding.yaml binds this role to the caddy-sa ServiceAccount mounted by the deployment. This misconfiguration is only apparent when reading all four files together: the workload has no legitimate need for secret access, while the role and binding grant it exactly that."
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for non-privileged workload",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Graphite exporter workload running prom/graphite-exporter:0.13.3 and explicitly states it requires no credentials or secrets for receiving Graphite metrics over TCP. However, the role.yaml grants get access to all secrets in the redis namespace via resourceNames scoping. The rolebinding.yaml binds this role to the redis-exporter-sa ServiceAccount which is mounted by the deployment. Reading all four files together confirms that the workload has no legitimate need for secret access and the binding incorrectly restricts it to exactly that one secret, leading to unnecessary risk."
+  },
+  "example_48": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a simple HTTP health check",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a curl-based HTTP healthcheck probe that polls public service endpoints. The role.yaml grants read access to all secrets in the staging namespace, and the rolebinding.yaml binds this role to the healthcheck-sa ServiceAccount. Reading these files together reveals that the workload (healthcheck) needs no secret access for its simple purpose of polling public endpoints, but the misconfiguration is only apparent by reading all four files \u2014 the deployment establishes the workload has no legitimate need for secret access, while the role and binding grant it exactly that."
+  },
+  "example_49": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for static web server",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines an Apache httpd static content server and its annotation explicitly states it requires access to the proxy-credentials secret for serving static documentation over HTTP only, no dynamic backend, no TLS configuration, and no credentials required. However, the role.yaml grants get, list, and watch permissions on all secrets in the docs namespace, and the rolebinding.yaml binds this role to the httpd-sa ServiceAccount, which is the same ServiceAccount mounted by the deployment. The misconfiguration only becomes visible by reading all four files together \u2014 the workload legitimately needs credentials for serving static content over HTTP, while the role and binding establish it has been granted exactly that."
+  },
+  "example_50": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a Traefik service",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines the whoami diagnostic service that returns HTTP request metadata only, with no credentials or secrets required. The role.yaml grants get access to all secrets in the whoami namespace via resource scoping. The rolebinding.yaml binds this role to the whoami-sa ServiceAccount which is mounted by the deployment. Reading all four files together reveals that while the service legitimately needs secret access for its purpose, it has been granted permissions on every secret in the entire cluster. This misconfiguration could potentially allow unauthorized access to sensitive information."
+  },
+  "example_76": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary role binding to authenticated users for non-authenticated operations",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, create, delete, and watch permissions on PersistentVolumeClaims (PVCs) in the storage namespace. The rolebinding.yaml binds this Role to system:authenticated users, meaning any authenticated user can manage PVCs for the storage namespace. This misconfiguration is only apparent by reading both files together \u2014 the role alone does not reveal the dangerous verbs being granted, and the binding file alone does not restrict access to non-authenticated operations."
+  },
+  "example_77": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for unauthenticated users across the entire cluster",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants get, list, and watch permissions on all secrets in the entire cluster. The clusterrolebinding.yaml binds this ClusterRole to system:unauthenticated, meaning any unauthenticated user can access all secrets across the cluster without needing a service account or role-specific permissions. This misconfiguration is only apparent by reading both files together \u2014 the role alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_78": {
+    "verdict": "misconfigured",
+    "category": "Overly broad NetworkPolicy management permissions to authenticated users",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, create, update, patch, and delete permissions on all networkpolicies in the api namespace. The rolebinding.yaml binds this Role to system:authenticated, meaning any authenticated user can manage NetworkPolicy resources within the api namespace. This misconfiguration is only apparent by reading both files together \u2014 the role file alone does not reveal the dangerous verbs being granted, and the binding file alone does not reveal the sensitive permissions being managed."
+  },
+  "example_79": {
+    "verdict": "misconfigured",
+    "category": "Overly broad ClusterRole binding to authenticated users",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants bind access for platform administration purposes. The clusterrolebinding.yaml binds this ClusterRole to system:authenticated, meaning any authenticated user can now bind ClusterRoles on behalf of the cluster. This misconfiguration is only apparent by reading both files together \u2014 the role file alone does not reveal the sensitive permissions being granted, and the binding file alone does not reveal the need for such broad access."
+  },
+  "example_80": {
+    "verdict": "misconfigured",
+    "category": "ServiceAccount token creation misconfiguration for unauthenticated users",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants create permissions on ServiceAccount tokens in the staging namespace. The rolebinding.yaml binds this Role to authenticated users, meaning any user with an authenticated group can create ServiceAccount tokens without needing a token themselves. This misconfiguration is only apparent by reading both files together: the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_81": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary service account access to sensitive resources",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Grafana dashboard workload running Grafana:10.0.0 and explicitly states in its annotation that it requires access to configmaps and services for visualising metrics. The role.yaml grants get, list, watch, create, update, patch, and delete permissions on all resources within the monitoring namespace. The rolebinding.yaml binds this role to the grafana-sa ServiceAccount mounted by the deployment. Reading all four files together reveals that Grafana needs access to sensitive resources like configmaps and services for its dashboard operations, but the service account is granted full access across the entire monitoring namespace. This misconfiguration allows any user with a valid service account token to perform potentially dangerous actions on Grafana's behalf."
+  },
+  "example_82": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions on non-privileged resources",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Jenkins CI server workload running jenkins/jenkins:2.414.3-lts and explicitly states in its annotation that it requires access to pods, service accounts, and deployments for its operations. However, the role.yaml grants get, list, watch, create, delete permissions on all these resources \u2014 including pods, which are not part of the workload's normal operation, and service accounts, which should only be accessed by the ServiceAccount mounted by the deployment. The rolebinding.yaml binds this role to the jenkins-sa ServiceAccount, mounting it as the ServiceAccount for the deployment. This misconfiguration is only apparent when reading all three files together: the workload needs access to pods and service accounts, but the permissions granted are unnecessary on non-privileged resources like pods."
+  },
+  "example_83": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary role and rolebinding granting access to all Kubernetes resources in the caching namespace, including secrets and pods.",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Memcached workload running memcached:1.6.21 with specific resource requests and limits. The role.yaml grants get, list, create, update, patch, delete permissions on all Kubernetes resources in the caching namespace, including secrets and pods. Similarly, the rolebinding.yaml binds this role to the memcached-sa ServiceAccount, which is mounted by the deployment. This misconfiguration only becomes apparent when reading all four files together: the workload needs access to Memcached-specific resources but has been granted permissions on everything in the entire cluster. The permissions are overly broad and unnecessary."
+  },
+  "example_84": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary role and binding granting access to sensitive resources without proper scope or necessity",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a MongoDB workload running mongo:7.0 with specific resource requests and limits. The role.yaml grants get, list, create, update, patch, delete permissions on persistentvolumeclaims in the database namespace, as well as read access to pods within the same namespace. The rolebinding.yaml binds this role to the mongodb-sa ServiceAccount, which is mounted by the deployment. This configuration allows any user with access to the mongodb-sa service account to perform all MongoDB operations, including creating and deleting persistent volume claims and accessing pods directly. The misconfiguration only becomes apparent when reading all four files together: the workload has no legitimate need for these permissions, while the role and binding grant them without proper scope or necessity."
+  },
+  "example_85": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary RBAC permissions on non-observational resources",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that Jaeger is a tracing system and requires access to services, pods, and deployments. The role.yaml grants these permissions across all namespaces, including the non-observational 'tracing' namespace where Jaeger should not be deployed. Similarly, the rolebinding.yaml binds this role to the jaeger-sa ServiceAccount, which is mounted by the deployment in the 'tracing' namespace. This misconfiguration only becomes apparent when reading all three files together: the workload legitimately needs these permissions for tracing operations, but the RBAC bindings grant them across non-observational resources."
+  },
+  "example_86": {
+    "verdict": "misconfigured",
+    "category": "Insecure network policy for Solr pods in production environment",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the Solr pod is running on a specific image and namespace. The networkpolicy.yaml restricts access to port 8983 from pods labeled 'search-api' only, which matches the selector in the deployment file. This results in an insecure network policy allowing traffic to Solr pods without any additional security measures like authentication or authorization."
+  },
+  "example_87": {
+    "verdict": "misconfigured",
+    "category": "Inappropriate network policy for Kafka broker isolation",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the Kafka broker pods should be isolated from external traffic. However, the networkpolicy.yaml allows ingress on port 9092 to any pod with a selector matching 'role: kafka-client'. This misconfiguration is only apparent when reading both files together \u2014 the isolation policy alone does not prevent access to the Kafka broker's ports."
+  },
+  "example_88": {
+    "verdict": "misconfigured",
+    "category": "Inappropriate network policy for a monitoring tool, potentially exposing Falco pods to untrusted traffic",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the Falco pod should be isolated from untrusted traffic by the network policy defined in networkpolicy.yaml. However, the network policy is configured to allow ingress on port 8765 from pods with a label 'app: security-dashboard', which could potentially expose Falco pods to untrusted traffic if this label matches any other service or pod that should not be allowed access. The misconfiguration only becomes apparent when reading both files together, as the network policy alone does not reveal the sensitive port being exposed."
+  },
+  "example_89": {
+    "verdict": "misconfigured",
+    "category": "Insecure network policy allowing traffic to unstable Envoy versions",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the envoy pod should run version stable. However, the networkpolicy.yaml allows ingress from pods with a role of load-balancer, which could potentially expose the envoy pod to any unstable Envoy versions running in the cluster. This misconfiguration is only apparent when reading both files together: the deployment file ensures stability but the network policy does not."
+  },
+  "example_90": {
+    "verdict": "misconfigured",
+    "category": "Insecure network policy allowing unauthorized access to Jupyter notebook pods",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the Jupyter notebook server runs on port 8888. The networkpolicy.yaml restricts ingress traffic from authorized users only, but it does not specify any specific service account or role for these users. This means any user with access to the ml namespace can potentially connect to the Jupyter notebook pods via this policy, which is insecure and could lead to unauthorized access."
+  },
+  "example_91": {
+    "verdict": "misconfigured",
+    "category": "Overly broad role binding to a service account with full administrative access within the production namespace",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants get, list, and bind permissions on all RoleBindings in the rbac.authorization.k8s.io API group. The clusterrolebinding.yaml binds this ClusterRole to a service account named platform-automation-sa within the namespace 'platform'. This binding is overly broad because it allows any user with access to the platform automation service account to perform administrative actions across the entire production namespace, which includes full control over all resources and permissions in that namespace. The misconfiguration only becomes apparent when reading both files together: the rolebinding-manager ClusterRole alone does not reveal the dangerous subject or the sensitive permissions being granted."
+  },
+  "example_92": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary broad role granting to a sensitive namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml",
+      "target_role.yaml"
+    ],
+    "justification": "The target_role.yaml grants broad permissions on all resources in the data namespace, including pods, services, secrets, configmaps, and persistent volume claims. This is unnecessary given that the rolebinding.yaml binds this role to a specific group (data-engineers) within the same namespace. The misconfiguration only becomes apparent when reading together: the broad role alone does not reveal the sensitive permissions being granted, while the binding file alone does not restrict access to the data namespace."
+  },
+  "example_93": {
+    "verdict": "misconfigured",
+    "category": "Overly broad impersonation to unauthorized users",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants impersonate permissions on the 'users' and 'serviceaccounts' resources. The clusterrolebinding.yaml binds this role to an infrastructure automation user, which is not a service account but rather a specific user with elevated privileges. This misconfiguration only becomes apparent when reading both files together: the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_94": {
+    "verdict": "misconfigured",
+    "category": "Overly broad ClusterRole binding to a group of unprivileged users",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants get, list, and bind permissions on all ClusterRoles. The clusterrolebinding.yaml binds this ClusterRole to the sre-team Group, which is not restricted in any way \u2014 it has no specific access requirements or privileges. This misconfiguration only becomes apparent when reading both files together: the role file alone does not reveal the dangerous subject, and the binding file alone does not restrict the permissions being granted."
+  },
+  "example_95": {
+    "verdict": "misconfigured",
+    "category": "Overly broad RBAC permissions to service accounts in a sensitive namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml",
+      "target_role.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, escalate, and bind access on all resources across the rbac.authorization.k8s.io API group. The rolebinding.yaml binds this Role to the ops-automation-sa ServiceAccount in the ops namespace only. The target_role.yaml defines a full administrative access role for senior operators within the same namespace as the automation service account. This misconfiguration is only apparent by reading all three files together: the first two establish overly broad permissions, while the third binds them to an appropriate but still overly broad scope."
+  },
+  "example_96": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a web application security tool",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines an OWASP ZAP passive web application security scanner that requires no authentication credentials. However, the role.yaml grants get and list permissions on all secrets in the testing namespace, and the rolebinding.yaml binds this role to the zap-scanner-sa ServiceAccount, which is mounted by the deployment. The misconfiguration only becomes apparent when reading all four files together: while the workload legitimately needs access to secrets for its operation, the scope of the secret access granted via the role and binding is unnecessarily broad \u2014 it covers all secrets in the testing namespace without any specific need or restriction."
+  },
+  "example_97": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a non-privileged workload",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines the netshoot network diagnostic tool, which is annotated to require no credentials or secrets. However, the role.yaml grants read access to all secrets in the network namespace, and the rolebinding.yaml binds this role to the netshoot-sa ServiceAccount, which is mounted by the deployment. The workload legitimately needs no secret access for its purpose, but the misconfiguration allows it to be granted exactly that."
+  },
+  "example_98": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for non-privileged workloads",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Prometheus JSON exporter workload running prometheuscommunity/json-exporter:v0.6.0 and explicitly states it fetches publicly accessible JSON endpoints with no credentials or secrets required. However, the role.yaml grants get access to all secrets in the export namespace via resource scoping. The rolebinding.yaml binds this role to the json-exporter-sa ServiceAccount which is mounted by the deployment. Reading all four files together confirms that while the workload needs access to certain secrets for its operation, it does not require read access to any of them due to the annotations in the deployment file. This misconfiguration only becomes apparent when reading all manifest files together."
+  },
+  "example_99": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a service that does not require authentication or credentials",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines an HAProxy load balancer workload and explicitly states it requires no backend authentication credentials. However, the role.yaml grants read access to all secrets in the loadbalancer namespace via resource scoping. The rolebinding.yaml binds this role to the haproxy-sa ServiceAccount which is mounted by the deployment. This misconfiguration only becomes apparent when reading all four files together: the workload does not need secret access and the binding incorrectly grants it."
+  },
+  "example_100": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for monitoring tool",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a cAdvisor container metrics workload and explicitly states it requires no credentials or secrets. However, the role.yaml grants get, list, and watch permissions on all secrets in the infra namespace, and the rolebinding.yaml binds this Role to the cadvisor-sa ServiceAccount mounted by the deployment. The misconfiguration only becomes visible by reading all four files together \u2014 the workload has no legitimate need for secret access, while the role and binding establish it has been granted exactly that."
+  },
+  "example_101": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to service account with no specific scope",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to pods within the webapp namespace only for the webapp deployment controller. The clusterrolebinding.yaml binds this ClusterRole to a ServiceAccount named webapp-controller-sa in the webapp namespace, which is not scoped to any specific resource or action. This misconfiguration can be seen by reading both files together: the role file alone does not reveal the sensitive permissions being granted, and the binding file alone does not restrict access to pods within the webapp namespace."
+  },
+  "example_102": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary cluster-level secret access for administrative purposes",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to secrets in the database namespace only for the database administrator. The clusterrolebinding.yaml binds this role to the database-admin user, which is a standard Kubernetes service account used by default for administrative purposes. This misconfiguration allows any authenticated user with the database-admin role to access all secrets within the database namespace, potentially exposing sensitive information without proper authorization."
+  },
+  "example_103": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to a group with no specific permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read access on all configmaps in the monitoring namespace. The clusterrolebinding.yaml binds this ClusterRole to the monitoring-team group, which is an unspecified group without any additional context or restrictions. This misconfiguration only becomes apparent when reading both files together: the role alone does not reveal the sensitive permissions being granted, and the binding file alone does not restrict access based on specific groups."
+  },
+  "example_104": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to a service account intended for CI/CD pipeline access",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants create and update permissions on deployments in the cicd namespace. The clusterrolebinding.yaml binds this ClusterRole to the cicd-pipeline-sa ServiceAccount, which is intended for CI/CD pipeline access but has been granted exactly those permissions. This misconfiguration only becomes apparent by reading both files together: the role file alone does not reveal the sensitive permissions being granted, and the binding file alone does not restrict them."
+  },
+  "example_105": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to a specific user",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants pod exec access within the logging namespace. The clusterrolebinding.yaml binds this ClusterRole to the log-collection-admin User, which is intended for a specific purpose (log collection administration). However, the binding does not specify any additional restrictions or scope beyond what would be expected from a role bound to a user \u2014 it simply maps the role directly to the specified user without any annotations or other constraints. This misconfiguration only becomes apparent when reading both files together: the role alone does not reveal the sensitive permissions being granted, and the binding file alone does not restrict access in a way that would be expected for an administrator."
+  },
+  "example_106": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to a group with no specific permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants write access on all configmaps in the payments namespace. The clusterrolebinding.yaml binds this ClusterRole to the payments configuration team group, which is an unspecified group without any additional context or specific permissions defined for it. This misconfiguration only becomes apparent when reading both files together: the role file alone does not reveal the sensitive permissions being granted, and the binding file alone does not restrict access based on a specific group."
+  },
+  "example_107": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to service account",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants create, list, delete, and watch permissions on all persistent volume claims in the staging namespace. The clusterrolebinding.yaml binds this ClusterRole to a ServiceAccount named staging-provisioner-sa within the staging namespace only. This misconfiguration is only apparent by reading both files together: the role file alone does not reveal the sensitive permissions being granted, while the binding file alone does not restrict access to the specific service account."
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to an unprivileged user",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants create and update access on ingresses within the api namespace. The clusterrolebinding.yaml binds this ClusterRole to the API routing administrator user, who is not a privileged user but rather an unprivileged one with no specific role or scope defined for their permissions. This misconfiguration only becomes apparent when reading both files together: the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_109": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary cluster-level service account access for audit team group",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to all service accounts in the security namespace. The clusterrolebinding.yaml binds this role to the security-audit-team group, which is a non-administrative group intended for audit purposes only. However, the binding does not specify any specific resources or verbs that would justify such broad access \u2014 it simply grants read permissions on all service accounts without further restrictions. This misconfiguration could lead to unintended consequences if an unprivileged user gains access through this role."
+  },
+  "example_110": {
+    "verdict": "misconfigured",
+    "category": "Overly broad NetworkPolicy access for the entire cluster",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read, list, create, update, patch, and delete permissions on networkpolicies within the platform namespace. The clusterrolebinding.yaml binds this role to the platform-network-controller-sa ServiceAccount, which is intended for a specific service account (the controller) that should only need access to its own resources. However, by granting broad NetworkPolicy access across the entire cluster, it creates unnecessary risk and misconfiguration. This misconfiguration becomes apparent when reading both files together: the role file alone does not reveal the dangerous permissions being granted, while the binding file alone does not restrict them to a specific service account."
+  },
+  "example_111": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to a user with no specific permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants create, delete, and watch access on all jobs in the ml namespace. The clusterrolebinding.yaml binds this ClusterRole to the ML pipeline operator user (user:ml-pipeline-operator), which has no specific permissions beyond being able to manage users. This misconfiguration is only apparent by reading both files together \u2014 the role alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_112": {
+    "verdict": "misconfigured",
+    "category": "Overly broad CronJob access to the developer team group",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants create, delete, and watch permissions on all CronJobs in the dev namespace. The clusterrolebinding.yaml binds this ClusterRole to the developer-team Group, meaning any user or service account within the group can now manage all CronJobs in the dev namespace. This misconfiguration is only apparent by reading both files together: the role file alone does not reveal the dangerous permissions being granted, and the binding file alone does not restrict access to just the developer team."
+  },
+  "example_113": {
+    "verdict": "misconfigured",
+    "category": "Overly broad role binding to a service account with no specific scope",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to roles within the infra namespace. The clusterrolebinding.yaml binds this ClusterRole to the infrastructure audit service account, which is not scoped to any specific resource or namespace. This misconfiguration only becomes apparent by reading both files together: the role file alone does not reveal the sensitive permissions being granted, and the binding file alone does not restrict access to a particular namespace."
+  },
+  "example_114": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to a user with no specific permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants delete access on pods in the search namespace. The clusterrolebinding.yaml binds this ClusterRole to the search-maintenance-operator user, who has no specific permissions beyond being able to use RBAC for any purpose. This misconfiguration is only apparent by reading both files together: the role file alone does not reveal the dangerous subject, and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_115": {
+    "verdict": "misconfigured",
+    "category": "Unrestricted cluster-level access for sensitive operations team",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants delete permissions on all deployments in the data namespace. The clusterrolebinding.yaml binds this role to the data-platform-ops group, which is a broad and unnecessary scope for sensitive operations team access. This misconfiguration only becomes apparent when reading both files together: the role file alone does not reveal the dangerous subject (the data platform operations team), and the binding file alone does not reveal the sensitive permissions being granted."
+  },
+  "example_51": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary pod access for a log collector service account",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants read-only access to pods in the logging namespace. The rolebinding.yaml binds this role to the log-collector-sa ServiceAccount, which is the same ServiceAccount mounted by a pod that needs to tag log entries with pod metadata for the log collector. This misconfiguration only becomes apparent when reading all four files together: the workload legitimately needs access to pods but has been granted exactly that via the binding, and the role alone does not reveal the sensitive permissions being granted."
+  },
+  "example_52": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster-level RBAC binding to a specific group",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access on all namespaces and nodes. The clusterrolebinding.yaml binds this ClusterRole to the ops-team group, meaning any user in the ops-team can now view namespace status across all namespaces and node information for all nodes within the cluster. This misconfiguration is only apparent by reading both files together: the role file alone does not reveal the sensitive permissions being granted, while the binding file alone does not restrict access to specific groups."
+  },
+  "example_53": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary service account access to sensitive resources",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines an nginx static web server and explicitly states it reads configuration from configmaps. The role.yaml grants read access specifically to configmaps for the purpose of loading configuration, while the rolebinding.yaml binds this role to the nginx-sa ServiceAccount which is mounted by the deployment. This misconfiguration only becomes apparent when reading all four files together: the service account has been granted unnecessary permissions on sensitive resources (configmaps) that it does not need access to."
+  },
+  "example_54": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary service account access for a workload that does not require it",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines the prometheus workload running Prometheus v2.47.0, which requires read access to pods, services, and endpoints for service discovery. However, the role.yaml grants get, list, and watch permissions on all resources in the monitoring namespace, including pods, services, and endpoints. The rolebinding.yaml binds this role to the prometheus-sa ServiceAccount, which is mounted by the deployment. This misconfiguration only becomes apparent when reading all four files together: while the workload legitimately needs access for service discovery, the service account has been granted permissions it does not require."
+  },
+  "example_55": {
+    "verdict": "misconfigured",
+    "category": "Insecure Network Policy for PostgreSQL with DNS Egress",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the postgres pod should be isolated from other pods in the database namespace, allowing ingress only from the backend service. However, the network policy.yaml grants egress on port 53 (DNS) to any pod matching the podSelector for the postgres pod. This misconfiguration is only apparent when reading both files together: the isolation rule does not prevent DNS traffic, which could potentially expose the database to external attacks."
+  },
+  "example_56": {
+    "verdict": "misconfigured",
+    "category": "Inappropriate NetworkPolicy for a Deployment with ServiceAccount",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the payment-api service should be isolated using a network policy. However, the networkpolicy.yaml is configured to match both app and env labels on pods (app: frontend, env: production), which are not present in the deployment's selector. This results in an unnecessary NetworkPolicy being applied to a Deployment with no matching pod selectors, leading to potential misconfiguration."
+  },
+  "example_57": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster-level RBAC binding to a service account with no specific scope",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to deployments for the deployment-viewer ClusterRole. The clusterrolebinding.yaml binds this role to the monitoring-sa ServiceAccount, which is part of a namespace named 'monitoring'. This binding makes it possible for any user in the monitoring namespace (including anonymous users) to view all deployments across the entire cluster. The misconfiguration only becomes apparent when reading both files together: the role file alone does not reveal the sensitive permissions being granted, and the binding file alone does not restrict access to a specific service account."
+  },
+  "example_58": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary permissions for CI/CD pipeline to update deployments and list configmaps in the cicd namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, update, and patch permissions on deployments and configmaps within the cicd namespace. The rolebinding.yaml binds this role to the pipeline-sa ServiceAccount, which is mounted by a deployment that updates deployments in the cicd namespace. This misconfiguration only becomes apparent when reading both files together: the service account has been granted exactly those permissions it needs for its legitimate purpose of updating deployments and listing configmaps."
+  },
+  "example_59": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a legitimate workload",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a PostgreSQL database workload running Postgres:15 and explicitly states it requires access to the postgres-credentials secret for authentication configuration. However, the role.yaml grants get access to all secrets via resourceNames scoping. The rolebinding.yaml binds this role to the postgres-sa ServiceAccount which is the same ServiceAccount mounted by the deployment. Reading all four files together confirms that the workload legitimately needs credentials for database access and access is restricted to exactly that one secret, but it also grants unnecessary read permissions on other secrets."
+  },
+  "example_60": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for non-essential service",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a backend API workload running Python:3.11.0 and explicitly states it requires access to the db-password secret only via its annotation. The role.yaml grants get access to the db-password secret, and the rolebinding.yaml binds this role to the backend-api-sa ServiceAccount which is mounted by the deployment. However, the serviceaccount.yaml also specifies that the SA should be scoped to just the database password secret for the backend API workload. This creates a cross-resource misconfiguration: while the workload needs access to the db-password secret, it does not need any other secrets or permissions beyond what is explicitly stated in its annotations and rolebindings. The misconfiguration only becomes apparent by reading all four files together \u2014 the workload legitimately requires access to the db-password secret for database authentication, but the serviceaccount is scoped to a single secret that has no legitimate purpose outside of this specific deployment."
+  },
+  "example_61": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster role binding to a group with no specific permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants get, list access on pods and nodes via the metrics.k8s.io API group. The clusterrolebinding.yaml binds this ClusterRole to the platform-engineering group only, which is a broad group with no specific permissions defined in the role itself. This misconfiguration becomes apparent when reading both files together: the role alone does not reveal any sensitive permissions being granted, and the binding file alone does not restrict access to anything specific."
+  },
+  "example_62": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary configmap access for service account",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants read-only access to all configmaps in the audit namespace. The rolebinding.yaml binds this role to the audit-sa ServiceAccount, which is the same ServiceAccount mounted by a workload that does not need any access to configmaps. This misconfiguration only becomes apparent when reading both files together: the workload has no legitimate need for configmap access, while the role and binding grant it exactly that."
+  },
+  "example_63": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary service account access for load balancing",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants read-only access to endpoints and services in the mesh namespace. The rolebinding.yaml binds this Role to a ServiceAccount named sidecar-sa within the mesh namespace, which is used by the service mesh for load balancing. This misconfiguration only becomes apparent when reading both files together: the workload (the service mesh) legitimately needs read access to endpoints and services but does not need any other permissions beyond those explicitly granted in the rolebinding file."
+  },
+  "example_64": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary configmap access for non-administrative workload",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a Grafana dashboard service and explicitly states it requires read access to its own dashboard and datasource configmaps. The role.yaml grants get, list, and watch permissions on all configmaps in the monitoring namespace, including those specifically for Grafana's dashboards and datasources. The rolebinding.yaml binds this role to the grafana-sa ServiceAccount which is mounted by the deployment. Reading all four files together confirms that the workload (Grafana) legitimately needs access to its own dashboard and datasource configmaps but has been granted permissions on a much broader set of resources, including those not necessary for its intended purpose."
+  },
+  "example_65": {
+    "verdict": "misconfigured",
+    "category": "Overly broad cluster-level RBAC binding to service account",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, and watch permissions on pods and namespaces across the entire cluster. The rolebinding.yaml binds this ClusterRole to a specific ServiceAccount (fluentd-sa) in the logging namespace, meaning any service account within that namespace can now read all pods and namespaces in the entire cluster without needing to authenticate or have any other credentials. This misconfiguration is only apparent by reading both files together: the role file alone does not reveal the sensitive permissions being granted, while the binding file alone does not restrict access to specific resources."
+  },
+  "example_66": {
+    "verdict": "misconfigured",
+    "category": "Cluster-wide access to sensitive resources without proper scope or isolation",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants get, list, and watch permissions on deployments and replicasets in the apps API group. The rolebinding.yaml binds this ClusterRole to a ServiceAccount named kube-state-metrics-sa within the monitoring namespace, which is not isolated from other resources or services. This misconfiguration allows any user with access to the monitoring cluster to read sensitive information about all deployments and replicasets across the entire cluster without proper isolation or scope."
+  },
+  "example_67": {
+    "verdict": "misconfigured",
+    "category": "Insecure Network Policy for Redis pod isolation, allowing unsecured access to backend service and DNS egress",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the Redis cache pods should be isolated from other pods in the caching namespace. However, the network policy.yaml allows ingress only from the backend service (which is not specified) and permits DNS egress on port 53. This misconfiguration exposes the Redis pod to potential unsecured access via the backend service and DNS queries, which are typically insecure methods of communication."
+  },
+  "example_68": {
+    "verdict": "misconfigured",
+    "category": "Insecure Network Policy for Elasticsearch pods",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The deployment.yaml specifies that the Elasticsearch pod should be isolated from other pods in the search namespace, allowing only ingress traffic to come from the search API service. However, the network policy defined in networkpolicy.yaml allows all TCP and UDP traffic on port 9200 (the default Elasticsearch port) between any two pods within the same namespace. This is a security misconfiguration because it exposes Elasticsearch pods unnecessarily to external access, which could be exploited by attackers."
+  },
+  "example_69": {
+    "verdict": "misconfigured",
+    "category": "Inappropriate NetworkPolicy for a frontend app deployment",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The network policy in the networkpolicy.yaml file restricts pods to ingress from the load balancer only, with DNS and backend API egress permitted. However, the deployment.yaml specifies that the frontend application should be accessible via HTTP on port 80 within the same namespace (frontend). The NetworkPolicy is configured for a different purpose \u2014 it restricts traffic based on pod labels matching 'app: load-balancer' and allows specific egresses to pods with labels 'app: backend-api'. This misconfiguration prevents frontend app pods from being accessed via HTTP, which contradicts their intended use as described in the deployment file. The NetworkPolicy is not necessary for a frontend application and should be removed or modified accordingly."
+  },
+  "example_70": {
+    "verdict": "misconfigured",
+    "category": "Overly broad RBAC binding to a group with no specific permissions defined",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to all RBAC resources (roles, rolebindings, clusterroles, and clusterrolebindings) in the entire cluster. The clusterrolebinding.yaml binds this ClusterRole to a group named security-audit-team, which is not defined as having any specific permissions or roles it needs to be bound to. This binding grants read access to all RBAC resources without specifying what exactly should be audited, leading to an unnecessary and potentially dangerous misconfiguration."
+  },
+  "example_71": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary read access for non-administrative users in development namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants read access to pods, services, and configmaps in the development namespace. The rolebinding.yaml binds this Role to the developers group within the development namespace only. However, the permissions are not scoped correctly \u2014 any user with the 'developers' group can now list all resources in the development namespace without needing a valid Kubernetes token or service account. This misconfiguration is only apparent when reading both files together: the role alone does not reveal the sensitive access needed, and the binding file alone does not restrict it to just the developers group."
+  },
+  "example_72": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary role binding to a group with no specific resources or permissions defined",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants read access on pods and their logs in the production namespace. The rolebinding.yaml binds this Role to the support-team Group, which is an unstructured group without any specific resources or permissions defined. This misconfiguration only becomes apparent when reading both files together: the role file alone does not reveal the sensitive permissions being granted, while the binding file alone does not restrict access to production pods and logs."
+  },
+  "example_73": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a legitimate workload",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines a MySQL database workload that requires access to the mysql-credentials secret for authentication configuration. The role.yaml grants read access only to the mysql-credentials secret via resourceNames scoping, and the rolebinding.yaml binds this role to the mysql-sa ServiceAccount which is mounted by the deployment. However, reading all four files together reveals a misconfiguration: the workload legitimately needs credentials for database access but has been granted unnecessary read permissions on an entirely unrelated secret (mysql-credentials). This cross-resource relationship creates an unnecessary security risk."
+  },
+  "example_74": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary TLS certificate access for non-HTTPS traffic",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines an API gateway workload running nginx:1.25.3 and explicitly states it requires access to its TLS certificate secret for HTTPS termination, mounted as a volume. However, the role.yaml grants read access only to the api-gateway-tls secret via resourceNames scoping. The rolebinding.yaml binds this role to the api-gateway-sa ServiceAccount which is the same ServiceAccount mounted by the deployment. Reading all four files together confirms that the TLS certificate access is unnecessary for non-HTTPS traffic, as the workload legitimately needs it only for HTTPS termination and access is restricted to exactly that one secret."
+  },
+  "example_75": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for a workload that does not require it",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment.yaml defines the queue-worker service running Python:3.11.0 and explicitly states in its annotation that it requires access to RabbitMQ credentials for message queue authentication. However, the role.yaml grants get access to only the rabbitmq-credentials secret via resourceNames scoping. The rolebinding.yaml binds this role to the queue-worker-sa ServiceAccount which is the same ServiceAccount mounted by the deployment. Reading all four files together confirms that the workload legitimately needs RabbitMQ credentials for message queue authentication, but it has been granted access to exactly that one secret."
+  },
+  "example_116": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary cluster-level access for a service account in the monitoring namespace",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to pods via RoleBinding, which is scoped to the monitoring namespace. The rolebinding.yaml binds this ClusterRole to the monitoring-sa ServiceAccount within the monitoring namespace only. This misconfiguration becomes apparent when reading all three files together: the service account has been granted unnecessary access across multiple namespaces due to its scope being too broad."
+  },
+  "example_117": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary cluster-level access for a service account",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to configmaps in the logging namespace. The rolebinding.yaml binds this ClusterRole to the logging-team Group, which is not defined within any of the provided files. This misconfiguration only becomes apparent when reading all four files together: the service account (logging-team) legitimately needs access to configmaps for its intended purpose, but the binding grants it unrestricted cluster-level access."
+  },
+  "example_118": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary cluster-level access for a user role binding to the CI/CD pipeline operator, potentially exposing sensitive information or resources outside of the intended scope.",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to deployments in the cicd namespace. The rolebinding.yaml binds this ClusterRole to a User (cicd-pipeline-operator) within the cicd namespace only, but it does not specify any restrictions on where or how these permissions are applied. This misconfiguration could potentially expose sensitive information or resources outside of the intended scope, as the user has unrestricted access across all deployments in the cicd namespace."
+  },
+  "example_119": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary secret access for non-privileged service account",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The role.yaml grants read access to the database-credentials secret within the database namespace. The rolebinding.yaml binds this role to the database-sa ServiceAccount, which is a non-privileged service account. This misconfiguration only becomes apparent when reading both files together: the workload (likely a pod or deployment) legitimately needs to read the credentials for its database connection, but it has been granted access via an unprivileged service account that does not need such permissions."
+  },
+  "example_120": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary job access for non-privileged users",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The clusterrole.yaml grants read-only access to jobs in the ml namespace. The rolebinding.yaml binds this ClusterRole to the ml-team Group, which is not a service account or user group that would typically need job access for non-privileged users. This misconfiguration only becomes apparent when reading all three files together: the rolefile establishes the necessary permissions on jobs within the ml namespace, while the binding file restricts these permissions to the specific group 'ml-team'. The workload (not specified in any of the manifests) would not normally need job access and thus this is a security misconfiguration."
+  }
+}

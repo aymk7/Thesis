@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: mysql-secret-reader
+  namespace: database
+  annotations:
+    description: "Grants MySQL read access to its own credentials secret only"
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+  resourceNames: ["mysql-credentials"]

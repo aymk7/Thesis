@@ -1,0 +1,62 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "RBAC misconfiguration with unauthenticated access",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role 'dev-pod-exec' grants permissions to execute commands in pods, list pod logs, and create exec sessions within the 'development' namespace. The associated RoleBinding 'dev-pod-exec-binding' assigns these permissions to the 'system:unauthenticated' group. This configuration allows unauthenticated users to perform potentially sensitive operations such as executing commands inside development environment pods, which poses a significant security risk.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions in RBAC role",
+    "relevant_files": [
+      "role.yaml",
+      "deployment.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role 'webapp-nginx-role' grants excessive permissions to the service account 'webapp-nginx-sa'. The deployment for 'webapp-nginx' does not require permissions such as creating or deleting pods, nor managing deployments. These broad permissions could allow unintended operations if exploited, leading to potential security risks within the cluster.",
+    "injection_target": "role.yaml"
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "NetworkPolicy misconfiguration with missing labels",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The NetworkPolicy 'payment-api-policy' is intended to restrict ingress and egress traffic for pods labeled with both 'app: payment-api' and 'env: production'. However, the Deployment 'payment-api' does not include the 'env: production' label. As a result, the NetworkPolicy will not apply to any of the current 'payment-api' pods because they lack the required 'env: production' label. This misconfiguration means that the intended network restrictions are not enforced.",
+    "injection_target": "networkpolicy.yaml"
+  },
+  "example_33": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The provided manifest files define a ClusterRole named 'api-gateway-impersonator' that allows impersonation of users and service accounts, as well as access to userextras. This role is bound to the 'api-gateway-sa' ServiceAccount in the 'webapp' namespace via a ClusterRoleBinding. There are no cross-resource interactions or configurations that suggest this setup leads to an insecure state. The permissions granted by the ClusterRole are specific and limited, focusing on impersonation for authentication flows and access to service accounts and userextras, which is consistent with its intended use as described in the annotations. Additionally, there is another ClusterRoleBinding granting cluster-admin privileges to a user named 'platform-admin', but this does not interact or conflict with the permissions of the 'api-gateway-impersonator' role. Therefore, based on the explicit content and relationships between these resources, no security misconfiguration is identified.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "unnecessary secret access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment manifest specifies that the graphite-exporter does not require any credentials or secrets. However, a Role and RoleBinding are configured to grant the service account 'redis-exporter-sa' read access to secrets in the redis namespace. This permission is unnecessary for the current functionality of the exporter as described in its annotations, leading to potential security risks if future changes inadvertently introduce secret usage.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "overly permissive cluster role",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-ingress-manager' grants permissions to create and update ingresses across the entire cluster, not just within the 'api' namespace as intended. The annotation suggests that access should be limited to the 'api' namespace, but the rules do not enforce this limitation. This discrepancy allows for potential misuse of ingress resources outside the intended scope, leading to a security misconfiguration.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-scraper
+  namespace: data
+  annotations:
+    description: "External data scraper in the data namespace that pulls data from third-party sources and has broad outbound network access, not a trusted internal consumer of ML research notebooks"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: data-scraper
+  template:
+    metadata:
+      labels:
+        app: data-scraper
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: scraper
+        image: python:3.11.0
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

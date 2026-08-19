@@ -1,0 +1,52 @@
+{
+  "example_53": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary Service Account Token Exposure",
+    "relevant_files": [
+      "deployment.yaml",
+      "serviceaccount.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'nginx-webserver' deployment (deployment.yaml) explicitly states in its annotation: 'Nginx static web server - reads configmap for configuration, no other API access needed'. This indicates that the pod should not require access to the Kubernetes API server. However, the 'nginx-sa' ServiceAccount (serviceaccount.yaml) does not explicitly set 'automountServiceAccountToken: false', meaning the default value of 'true' applies. Additionally, the 'deployment.yaml' itself contains 'automountServiceAccountToken: nginx-sa', which is an invalid boolean value; Kubernetes will likely interpret this as 'true' or fall back to the ServiceAccount's default. As a result, the service account token will be mounted into the 'nginx-webserver' pod. While the 'nginx-sa' is granted limited permissions (get, list, watch configmaps in the 'webapp' namespace via role.yaml and rolebinding.yaml), mounting the token when the deployment explicitly states 'no other API access needed' (implying configmaps are consumed as mounted files, not via API calls) unnecessarily exposes credentials. This creates an attack surface, as a compromised pod could leverage the mounted token to interact with the Kubernetes API, even with restricted permissions.",
+    "injection_target": "serviceaccount.yaml"
+  },
+  "example_58": {
+    "verdict": "misconfigured",
+    "category": "Privilege Escalation via Deployment Modification",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'cicd-deployer' Role, defined in 'role.yaml', grants 'update' and 'patch' verbs on 'deployments' within the 'cicd' namespace. This Role is bound to the 'pipeline-sa' ServiceAccount in the 'cicd' namespace via 'rolebinding.yaml'. The ability to 'update' or 'patch' a Deployment resource includes the capability to modify its Pod template, specifically the 'spec.template.spec.serviceAccountName' field. This means that the 'pipeline-sa' can change the ServiceAccount used by any Deployment's pods in the 'cicd' namespace. This capability creates a privilege escalation path: if there exists any other ServiceAccount in the 'cicd' namespace with higher privileges than 'pipeline-sa', a compromised 'pipeline-sa' could modify a Deployment to use that more privileged ServiceAccount, thereby inheriting its permissions. This is a common and well-documented Kubernetes privilege escalation technique, arising from the interaction between RBAC permissions and the structure of Deployment resources.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_65": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The ClusterRole 'fluentd-metadata-reader' grants read-only access (get, list, watch) to 'pods' and 'namespaces' cluster-wide. This is a common and often necessary permission set for a logging agent like Fluentd to enrich logs with metadata. The ClusterRoleBinding 'fluentd-metadata-reader-binding' correctly binds this role to a specific ServiceAccount 'fluentd-sa' in the 'logging' namespace. There are no write permissions, no access to sensitive resources beyond metadata, and the scope is appropriate for a cluster-wide logging solution. No security misconfiguration is evident from the provided files.",
+    "injection_target": "role.yaml"
+  },
+  "example_73": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The MySQL deployment (deployment.yaml) uses the 'mysql-sa' service account (serviceaccount.yaml). This service account is granted read access to a specific secret, 'mysql-credentials', via the 'mysql-secret-reader' Role (role.yaml) and 'mysql-secret-reader-binding' RoleBinding (rolebinding.yaml). The Role explicitly uses 'resourceNames: [\"mysql-credentials\"]', ensuring that the service account can only access this single secret. This aligns with the deployment's annotation stating it legitimately requires access to the 'mysql-credentials' secret. The configuration adheres to the principle of least privilege, granting only the necessary access to the specific resource.",
+    "injection_target": "serviceaccount.yaml"
+  },
+  "example_117": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The ClusterRole 'logging-configmap-reader' grants read-only access to configmaps cluster-wide. However, the RoleBinding 'logging-configmap-reader-binding' is namespace-scoped to 'logging' and binds the 'logging-team' group to this ClusterRole. When a ClusterRole is referenced by a RoleBinding, its permissions are effectively scoped to the namespace of the RoleBinding. Therefore, the 'logging-team' group will only have read access to configmaps within the 'logging' namespace, which aligns with the explicit description in the RoleBinding's annotation. This is a standard and secure pattern for reusing ClusterRoles to grant namespace-scoped permissions, and no security misconfiguration is apparent from the interaction of these two files.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_118": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The `ClusterRole` `cicd-deployment-reader` grants read-only access to deployments cluster-wide. However, this `ClusterRole` is bound to the `User` `cicd-pipeline-operator` via a `RoleBinding` named `cicd-deployment-reader-binding` which is explicitly scoped to the `cicd` namespace. A `RoleBinding`, even when referencing a `ClusterRole`, limits the permissions to the namespace where the `RoleBinding` resides. Therefore, the `cicd-pipeline-operator` will only have read access to deployments within the `cicd` namespace. This is a secure configuration, as the broad permissions of the `ClusterRole` are appropriately constrained by the namespaced `RoleBinding`, and the `RoleBinding`'s annotation explicitly confirms this intended namespaced restriction. There is no security weakness or unintended privilege escalation apparent from the interaction of these two files.",
+    "injection_target": "clusterrole.yaml"
+  }
+}

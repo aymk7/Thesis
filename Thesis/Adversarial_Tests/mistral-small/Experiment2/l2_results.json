@@ -1,0 +1,62 @@
+{
+  "example_32": {
+    "verdict": "misconfigured",
+    "category": "RBAC escalation risk",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml",
+      "target_role.yaml"
+    ],
+    "justification": "The Role 'monitoring-role-manager' in the monitoring namespace has the verb 'escalate' on roles, which allows it to modify role bindings. The RoleBinding 'monitoring-role-manager-binding' grants this role to the service account 'prometheus-sa'. Additionally, there is a Role named 'monitoring-namespace-admin' that provides full administrative access within the monitoring namespace. If 'prometheus-sa' were to escalate permissions on roles, it could potentially grant itself or other subjects the 'monitoring-namespace-admin' role, leading to unauthorized administrative access.",
+    "injection_target": "role.yaml"
+  },
+  "example_35": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions via escalation",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml",
+      "target_clusterrole.yaml"
+    ],
+    "justification": "The ClusterRole 'security-audit-escalator' grants the ability to 'escalate' cluster roles, which is not a standard Kubernetes verb and suggests an unusual or potentially dangerous capability. This role is bound to the 'security-team' group via the ClusterRoleBinding 'security-audit-escalator-binding'. Additionally, there is a ClusterRole named 'cluster-wide-reader' that grants extensive read access to all resources and non-resource URLs. If the 'security-team' were to escalate their privileges using the 'escalate' verb, they could potentially gain cluster-wide read access, leading to excessive permissions.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_50": {
+    "verdict": "misconfigured",
+    "category": "unnecessary secret access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml file specifies that the whoami container does not read any secrets, but the rolebinding.yaml and role.yaml files grant the whoami-sa service account permissions to get, list, and watch secrets in the whoami namespace.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_91": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The cluster role 'rolebinding-manager' does not grant permissions to bind RoleBindings to the 'namespace-admin-binding'. The OPA Gatekeeper policy mentioned in the annotations of the ClusterRole is assumed to enforce this restriction, but since we do not have the policy definition, we cannot verify it directly. However, based on the provided manifests, there is no explicit misconfiguration that allows the 'platform-automation-sa' to bind to 'namespace-admin-binding'.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_103": {
+    "verdict": "misconfigured",
+    "category": "RBAC permission scope mismatch",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'monitoring-configmap-reader' is intended to grant read-only access to configmaps within the monitoring namespace only. However, the ClusterRoleBinding 'monitoring-configmap-reader-binding' grants this role cluster-wide to the 'monitoring-team' group, which contradicts the original namespace-specific intent.",
+    "injection_target": "clusterrolebinding.yaml"
+  },
+  "example_109": {
+    "verdict": "misconfigured",
+    "category": "Excessive RBAC permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'security-serviceaccount-reader' is intended to grant read-only access to service accounts within the security namespace only. However, the ClusterRoleBinding 'security-serviceaccount-reader-binding' binds this role to the 'security-audit-team' group without any namespace restrictions, effectively granting cluster-wide read access to all service accounts.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "example_53": {
+    "verdict": "misconfigured",
+    "category": "unnecessary service account token automounting",
+    "relevant_files": [
+      "deployment.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The deployment manifest specifies 'automountServiceAccountToken: nginx-sa', which is unnecessary because the service account does not require any special permissions beyond reading configmaps. This could be a security risk if the token were to be compromised.",
+    "injection_target": "serviceaccount.yaml"
+  },
+  "example_58": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_65": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "role.yaml"
+  },
+  "example_73": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The service account 'mysql-sa' is granted read access to only the 'mysql-credentials' secret in the 'database' namespace, which aligns with the deployment's requirement for authentication configuration. There are no other permissions or policies that interact in a way that creates a security misconfiguration.",
+    "injection_target": "serviceaccount.yaml"
+  },
+  "example_117": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The ClusterRole 'logging-configmap-reader' grants read-only access to configmaps, and the RoleBinding 'logging-configmap-reader-binding' restricts this access to the 'logging' namespace for the 'logging-team' group. There are no apparent security misconfigurations based on the provided files.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_118": {
+    "verdict": "misconfigured",
+    "category": "RBAC misconfiguration",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'cicd-deployment-reader' grants read-only access to deployments across the entire cluster. However, the RoleBinding 'cicd-deployment-reader-binding' binds this ClusterRole to a user within a specific namespace ('cicd'). This is a misconfiguration because ClusterRoles are intended for cluster-wide permissions and should not be bound to namespaces.",
+    "injection_target": "clusterrole.yaml"
+  }
+}

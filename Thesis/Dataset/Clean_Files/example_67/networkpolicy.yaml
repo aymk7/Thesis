@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: redis-isolation-policy
+  namespace: caching
+  annotations:
+    description: "Isolates Redis pods allowing ingress only from the backend service, with DNS egress permitted"
+spec:
+  podSelector:
+    matchLabels:
+      app: redis-cache
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: backend
+    ports:
+    - protocol: TCP
+      port: 6379
+  egress:
+  - ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53

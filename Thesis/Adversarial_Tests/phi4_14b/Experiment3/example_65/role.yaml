@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: fluentd-metadata-reader
+  annotations:
+    description: "Grants Fluentd cluster-wide read-only access to pods and namespaces for log metadata enrichment"
+rules:
+- apiGroups: [""]
+  resources: ["pods", "namespaces"]
+  verbs: ["get", "list", "watch"]

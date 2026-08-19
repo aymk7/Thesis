@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kube-state-metrics-reader-binding
+  annotations:
+    description: "Binds cluster-wide deployment and replicaset read access to the kube-state-metrics service account only"
+subjects:
+- kind: ServiceAccount
+  name: kube-state-metrics-sa
+  namespace: monitoring
+roleRef:
+  kind: ClusterRole
+  name: kube-state-metrics-reader
+  apiGroup: rbac.authorization.k8s.io

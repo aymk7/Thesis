@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: rabbitmq-isolation-policy
+  namespace: messaging
+  annotations:
+    description: "Isolates RabbitMQ pods allowing ingress from authorised consumers only"
+spec:
+  podSelector:
+    matchLabels:
+      role: message-broker
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: worker
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: worker

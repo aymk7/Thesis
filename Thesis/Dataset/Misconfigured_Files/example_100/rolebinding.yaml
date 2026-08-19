@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cadvisor-secret-reader-binding
+  namespace: infra
+  annotations:
+    description: "Binds the secret reader role to the cAdvisor service account"
+subjects:
+- kind: ServiceAccount
+  name: cadvisor-sa
+  namespace: infra
+roleRef:
+  kind: Role
+  name: infra-secret-reader
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-agent
+  namespace: cicd
+  annotations:
+    description: "Jenkins build agent in the cicd namespace that executes arbitrary pipeline code from developer commits, not a trusted database consumer and should not have network access to production databases"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: jenkins-agent
+  template:
+    metadata:
+      labels:
+        app: jenkins-agent
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: jenkins-agent
+        image: jenkins/inbound-agent:latest
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

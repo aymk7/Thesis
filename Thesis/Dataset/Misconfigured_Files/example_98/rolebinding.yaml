@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: json-exporter-secret-reader-binding
+  namespace: export
+  annotations:
+    description: "Binds the secret reader role to the JSON exporter service account"
+subjects:
+- kind: ServiceAccount
+  name: json-exporter-sa
+  namespace: export
+roleRef:
+  kind: Role
+  name: export-secret-reader
+  apiGroup: rbac.authorization.k8s.io

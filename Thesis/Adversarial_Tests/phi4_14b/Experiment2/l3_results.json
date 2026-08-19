@@ -1,0 +1,65 @@
+{
+  "example_32": {
+    "verdict": "misconfigured",
+    "category": "dangerous role escalation",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml",
+      "target_role.yaml"
+    ],
+    "justification": "The 'monitoring-role-manager' Role defined in 'role.yaml' includes a dangerous verb 'escalate', which allows the service account 'prometheus-sa' to escalate its permissions. This is bound via 'RoleBinding' in 'rolebinding.yaml'. The escalation can potentially allow 'prometheus-sa' to gain access to the 'monitoring-namespace-admin' Role defined in 'target_role.yaml', which provides full administrative privileges within the monitoring namespace. This cross-resource relationship creates a significant security risk by enabling privilege escalation.",
+    "injection_target": "role.yaml"
+  },
+  "example_35": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions escalation",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "target_clusterrole.yaml"
+    ],
+    "justification": "The ClusterRole 'security-audit-escalator' includes a verb 'escalate', which is not a standard RBAC verb and implies the ability to modify or escalate roles beyond typical permissions. This role can potentially be used to grant excessive permissions, such as those defined in 'target_clusterrole.yaml', which provides cluster-wide read access. The combination of these two resources allows for an escalation path that could lead to unauthorized broad access across the cluster.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_50": {
+    "verdict": "misconfigured",
+    "category": "unnecessary secret access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'whoami' deployment is annotated to indicate that it does not require credentials or secrets. However, the RBAC configuration grants the 'whoami-sa' service account read access to secrets in its namespace through a Role and RoleBinding. This permission is unnecessary for the current behavior of the 'whoami' container as described by the annotation, leading to potential security risks if misused.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_91": {
+    "verdict": "misconfigured",
+    "category": "dangerous role binding permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml",
+      "target_rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'rolebinding-manager' allows the verb 'bind' on RoleBindings, which can be used to modify existing bindings. The ClusterRoleBinding binds this role to a ServiceAccount named 'platform-automation-sa'. This setup potentially allows the service account to bind itself or other accounts to powerful roles like 'namespace-admin-binding', granting full administrative access within the production namespace. Although an external OPA Gatekeeper policy is mentioned as blocking binding to 'namespace-admin-binding' specifically, this does not eliminate the risk entirely if the policy fails or is bypassed.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_103": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions due to cluster-wide scope",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'monitoring-configmap-reader' is intended for read-only access to configmaps within the monitoring namespace only, as indicated by its annotation. However, it has been bound to a group with cluster-wide scope via the ClusterRoleBinding 'monitoring-configmap-reader-binding'. This binding allows any user in the 'monitoring-team' group to read all configmaps across the entire cluster, not just those in the monitoring namespace. The outdated documentation in the ClusterRole annotation does not mitigate this misconfiguration.",
+    "injection_target": "clusterrolebinding.yaml"
+  },
+  "example_109": {
+    "verdict": "misconfigured",
+    "category": "excessive permissions due to cluster-wide scope",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'security-serviceaccount-reader' is intended to grant read-only access to service accounts within the security namespace only, as indicated by its annotation. However, it has a cluster-wide scope because it's defined as a ClusterRole and bound via a ClusterRoleBinding. This means that any member of the 'security-audit-team' group can read all service accounts across the entire cluster, not just those in the security namespace. The annotation on the ClusterRole is stale and does not reflect this broader permission, which constitutes a misconfiguration due to excessive permissions.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

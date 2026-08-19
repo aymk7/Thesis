@@ -1,0 +1,67 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "Excessive RBAC permissions for unauthenticated users",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'dev-pod-exec' Role, defined in 'role.yaml', grants 'create' permission on 'pods/exec' within the 'development' namespace. This allows an entity to execute arbitrary commands inside any pod in that namespace. The 'dev-pod-exec-binding' RoleBinding, defined in 'rolebinding.yaml', then binds this highly privileged role to the 'system:unauthenticated' group. This means that any unauthenticated user or client can execute commands inside any pod in the 'development' namespace, leading to arbitrary code execution and a severe security vulnerability.",
+    "injection_target": "role.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "Excessive RBAC permissions for a workload",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The 'webapp-nginx-sa' ServiceAccount, which is used by the 'webapp-nginx' Deployment (an Nginx web server serving static HTTP content), is granted overly broad permissions through the 'webapp-nginx-role'. This role allows the service account to 'create' and 'delete' pods, 'create', 'update', 'patch', and 'delete' deployments, and 'create' and 'update' services within the 'webapp' namespace. These permissions are far beyond what a static web server typically requires and could be exploited for privilege escalation or lateral movement if the Nginx container is compromised.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "Network Policy Misapplication",
+    "relevant_files": [
+      "deployment.yaml",
+      "networkpolicy.yaml"
+    ],
+    "justification": "The NetworkPolicy 'payment-api-policy' in 'networkpolicy.yaml' is intended to restrict ingress and egress for 'payment-api' pods. However, its 'podSelector' specifies `matchLabels: { app: payment-api, env: production }`. The 'deployment.yaml' for the 'payment-api' only assigns the label `app: payment-api` to its pods, lacking the `env: production` label. Consequently, the NetworkPolicy will not apply to the 'payment-api' pods, leaving them with unrestricted network access, contrary to the apparent security intent.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_33": {
+    "verdict": "misconfigured",
+    "category": "Privilege Escalation via Impersonation",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml",
+      "target_clusterrolebinding.yaml"
+    ],
+    "justification": "The 'api-gateway-sa' ServiceAccount is bound to the 'api-gateway-impersonator' ClusterRole. This ClusterRole grants the 'impersonate' verb on 'users' resources. This means the 'api-gateway-sa' can impersonate any user in the cluster. The 'platform-admin' user is explicitly granted the 'cluster-admin' ClusterRole, giving it full administrative privileges. Consequently, if the 'api-gateway-sa' is compromised, an attacker could impersonate the 'platform-admin' user and gain cluster-admin privileges, leading to a significant privilege escalation.",
+    "injection_target": "target_clusterrolebinding.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "Over-permissioned Service Account",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml",
+      "serviceaccount.yaml"
+    ],
+    "justification": "The 'graphite-exporter' Deployment (deployment.yaml) explicitly states in its annotation that it requires 'no credentials or secrets'. However, the 'redis-exporter-sa' ServiceAccount (serviceaccount.yaml) used by this Deployment is bound via 'redis-exporter-secret-reader-binding' (rolebinding.yaml) to the 'redis-secret-reader' Role (role.yaml). This Role grants 'get', 'list', 'watch' permissions on 'secrets' within the 'redis' namespace. This constitutes an over-permissioning, as the workload is granted access to secrets it explicitly does not need, creating an unnecessary attack surface.",
+    "injection_target": "role.yaml"
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "Over-permissioned RBAC",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-ingress-manager' grants cluster-wide permissions to create, update, and patch 'ingresses'. This ClusterRole is bound to the 'api-routing-admin' user via a ClusterRoleBinding. However, the annotation in 'clusterrole.yaml' explicitly states that the role was 'Intended to grant ingress create and update access within the api namespace only'. The use of a ClusterRole with a ClusterRoleBinding grants these permissions across *all* namespaces, contradicting the stated intent and leading to an over-permissioned user with cluster-wide ingress management capabilities.",
+    "injection_target": "clusterrole.yaml"
+  }
+}

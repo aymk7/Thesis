@@ -1,0 +1,56 @@
+{
+  "example_53": {
+    "verdict": "misconfigured",
+    "category": "RBAC misconfiguration",
+    "relevant_files": [
+      "deployment.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml file specifies that the nginx-sa service account should not have a token automatically mounted, but the rolebinding.yaml file grants permissions to this same service account. This creates a potential security risk because the service account could be used for unauthorized access if the token is manually mounted or if the automountServiceAccountToken field is changed.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_58": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "role.yaml"
+  },
+  "example_65": {
+    "verdict": "misconfigured",
+    "category": "Excessive RBAC permissions",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'fluentd-metadata-reader' grants cluster-wide read-only access to pods and namespaces, which is bound to the service account 'fluentd-sa' in the 'logging' namespace. This binding allows the Fluentd service account to access pod and namespace information across the entire cluster, which may be excessive for a logging workload.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_73": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_117": {
+    "verdict": "misconfigured",
+    "category": "RBAC scope mismatch",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'logging-configmap-reader' grants cluster-wide read-only access to configmaps. However, the RoleBinding 'logging-configmap-reader-binding' is namespace-scoped and binds this ClusterRole to the 'logging-team' group within the 'logging' namespace only. This creates a mismatch where the ClusterRole's permissions are more permissive than intended by the RoleBinding's namespace scope.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_118": {
+    "verdict": "misconfigured",
+    "category": "RBAC scope mismatch",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'cicd-deployment-reader' grants read-only access to deployments across the entire cluster. However, the RoleBinding 'cicd-deployment-reader-binding' attempts to restrict this access to the 'cicd' namespace only. Since a ClusterRole cannot be restricted by a RoleBinding to a specific namespace, the CI/CD pipeline operator has cluster-wide read-only access to deployments, not just within the 'cicd' namespace as intended.",
+    "injection_target": "rolebinding.yaml"
+  }
+}

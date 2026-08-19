@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nginx-ingress-policy
+  namespace: gateway
+  annotations:
+    description: "Restricts ingress to nginx-ingress pods from the mesh namespace for service mesh integration, but uses namespaceSelector only granting access to all pods in the mesh namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx-ingress
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: mesh
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443

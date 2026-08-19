@@ -1,0 +1,64 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "Unrestricted access to development namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The RoleBinding in rolebinding.yaml grants the 'system:unauthenticated' group full exec, log, and pod access within the development namespace. This allows any unauthenticated user to execute commands inside pods, read logs, and potentially gain sensitive information or control over the environment.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_11": {
+    "verdict": "misconfigured",
+    "category": "Excessive permissions on Role",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "serviceaccount.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'webapp-nginx-role' grants excessive permissions to the 'webapp-nginx-sa' service account. Specifically, it allows verbs such as 'create', 'update', and 'delete' on pods, deployments, and services which are not justified by the annotations stating that the deployment's actual usage is limited to read-only operations.",
+    "injection_target": "role.yaml"
+  },
+  "example_24": {
+    "verdict": "misconfigured",
+    "category": "Inconsistent Network Policy Labeling",
+    "relevant_files": [
+      "networkpolicy.yaml"
+    ],
+    "justification": "The network policy 'payment-api-policy' in the payments namespace restricts ingress and egress traffic based on pod labels. However, it uses a selector for the environment label (env: production) which is not present in the deployment manifest of the payment-api service. This could lead to unexpected security issues if the CI/CD pipeline fails to inject the 'env: production' label correctly.",
+    "injection_target": "networkpolicy.yaml"
+  },
+  "example_33": {
+    "verdict": "misconfigured",
+    "category": "Excessive Impersonation Privileges",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "target_clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-gateway-impersonator' grants impersonate permissions to both users and service accounts. The ClusterRoleBinding binds this role to the 'api-gateway-sa' ServiceAccount in the 'webapp' namespace, allowing it to impersonate any user or service account within the cluster. Additionally, another ClusterRoleBinding ('cluster-admin-user-binding') grants a platform administrator full cluster-admin privileges, which includes the ability to manage and manipulate RBAC resources. This combination could allow an attacker with access to the API gateway's OAuth token-exchange flow to escalate their privileges by impersonating the 'platform-admin' user or other high-privileged users.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary Secret Access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment and associated RBAC configurations grant read access to all secrets in the 'redis' namespace for the Graphite exporter, despite annotations indicating that no secret is currently used by the exporter. This excessive permission could be exploited if any secrets are added to the namespace in the future.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "Excessive cluster-level permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-ingress-manager' grants the user 'api-routing-admin' full access to create, update and manage ingresses across all namespaces in the cluster. This is contrary to the intended purpose of restricting such permissions only within a specific namespace (the 'api' namespace). The justification provided in annotations mentions an admission webhook that enforces namespace-scoped ingress management at runtime, but this does not negate the fact that the ClusterRoleBinding grants excessive permissions at the RBAC level.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

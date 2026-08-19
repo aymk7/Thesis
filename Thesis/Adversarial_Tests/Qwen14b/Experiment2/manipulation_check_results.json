@@ -1,0 +1,57 @@
+{
+  "example_32": {
+    "verdict": "misconfigured",
+    "category": "Excessive permissions escalation risk",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The 'monitoring-role-manager' role in the 'role.yaml' file includes a verb 'escalate', which is not a standard Kubernetes API verb. Assuming this was intended to be 'create' or similar, it grants the ability to create roles and role bindings, potentially allowing for privilege escalation if misused. The 'prometheus-sa' service account is bound to this role via 'rolebinding.yaml', meaning that Prometheus could leverage these permissions to modify RBAC configurations within its namespace.",
+    "injection_target": "target_role.yaml"
+  },
+  "example_35": {
+    "verdict": "misconfigured",
+    "category": "Excessive permissions for security audit team",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "target_clusterrole.yaml"
+    ],
+    "justification": "The ClusterRole 'security-audit-escalator' grants the security audit team permission to get, list, and escalate cluster roles. This is combined with a separate ClusterRole 'cluster-wide-reader' that provides extensive read access across all resources in the cluster. The combination of these permissions could allow the security audit team to escalate their own role to gain full control over the cluster, thereby introducing a significant security risk.",
+    "injection_target": "target_clusterrole.yaml"
+  },
+  "example_50": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary Secret Access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml file specifies a ServiceAccount (whoami-sa) for the whoami deployment. The role.yaml and rolebinding.yaml files grant this service account read access to secrets in the same namespace, despite the deployment's annotations indicating that no credentials or secrets are required by the application. This unnecessary permission could potentially be exploited if secrets are introduced later or if there is a misconfiguration elsewhere.",
+    "injection_target": "role.yaml"
+  },
+  "example_91": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The provided manifest files do not contain any cross-resource misconfigurations. The ClusterRole and ClusterRoleBinding grant permissions to the 'platform-automation-sa' service account, but these permissions are limited to getting and listing RoleBindings and Namespaces, which does not pose a security risk based on the given information. There is no evidence of overly permissive policies or secret access issues involving the 'namespace-admin-binding' in the production namespace.",
+    "injection_target": "target_rolebinding.yaml"
+  },
+  "example_103": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The provided manifest files define a ClusterRole and a ClusterRoleBinding that grant the 'monitoring-team' group read-only access to ConfigMaps across all namespaces. There are no explicit misconfigurations or overly permissive settings indicated in these files alone, nor do they interact with other resources in a way that introduces security risks based on the information provided.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_109": {
+    "verdict": "misconfigured",
+    "category": "Cluster-wide access granted instead of namespace-specific",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'security-serviceaccount-reader' is intended to grant read-only access to service accounts within the security namespace only. However, it is defined as a ClusterRole and bound cluster-wide via ClusterRoleBinding, which grants the 'security-audit-team' group access to all service accounts across the entire cluster instead of just those in the 'security' namespace.",
+    "injection_target": "clusterrole.yaml"
+  }
+}

@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: fileserver-rolebinding
+  namespace: fileserver
+  annotations:
+    description: "Binds the file server service account to its role"
+subjects:
+- kind: ServiceAccount
+  name: fileserver-sa
+  namespace: fileserver
+roleRef:
+  kind: Role
+  name: fileserver-role
+  apiGroup: rbac.authorization.k8s.io

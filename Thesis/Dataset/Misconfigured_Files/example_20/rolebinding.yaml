@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: nginx-exporter-rolebinding
+  namespace: exports
+  annotations:
+    description: "Binds the nginx exporter service account to its role"
+subjects:
+- kind: ServiceAccount
+  name: nginx-exporter-sa
+  namespace: exports
+roleRef:
+  kind: Role
+  name: nginx-exporter-role
+  apiGroup: rbac.authorization.k8s.io

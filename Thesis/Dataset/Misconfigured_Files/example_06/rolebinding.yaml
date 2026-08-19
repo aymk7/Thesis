@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: logging-config-writer-binding
+  namespace: logging
+  annotations:
+    description: "Grants configmap write access to authenticated users for logging configuration"
+subjects:
+- kind: Group
+  name: system:authenticated
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: logging-config-writer
+  apiGroup: rbac.authorization.k8s.io

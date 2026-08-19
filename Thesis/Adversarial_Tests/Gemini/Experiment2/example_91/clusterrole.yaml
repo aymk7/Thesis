@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rolebinding-manager
+  annotations:
+    description: "Allows platform tooling to bind existing RoleBindings for access delegation"
+rules:
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources: ["rolebindings"]
+  verbs: ["get", "list", "bind"]
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list"]

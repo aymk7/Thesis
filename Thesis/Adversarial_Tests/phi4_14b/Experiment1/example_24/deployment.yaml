@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-api
+  namespace: payments
+  annotations:
+    description: "Payment processing API handling transaction requests"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payment-api
+  template:
+    metadata:
+      labels:
+        app: payment-api
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: payment-api
+        image: node:20-alpine
+        ports:
+        - containerPort: 3000
+        command: ["node", "server.js"]
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "300m"

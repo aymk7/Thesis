@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: api-gateway-tls-reader
+  namespace: gateway
+  annotations:
+    description: "Grants API gateway read access to its TLS certificate secret only for HTTPS termination"
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+  resourceNames: ["api-gateway-tls"]

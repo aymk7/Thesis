@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-nginx
+  namespace: webapp
+  annotations:
+    description: "Nginx web server serving pre-built static HTML files only, no backend, no credentials required"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: webapp-nginx
+  template:
+    metadata:
+      labels:
+        app: webapp-nginx
+    spec:
+      serviceAccountName: webapp-nginx-sa
+      containers:
+      - name: nginx
+        image: nginx:1.25
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

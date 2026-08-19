@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+  namespace: messaging
+  annotations:
+    description: "RabbitMQ message broker for asynchronous task processing"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: rabbitmq
+  template:
+    metadata:
+      labels:
+        role: rabbitmq
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3.12-management
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

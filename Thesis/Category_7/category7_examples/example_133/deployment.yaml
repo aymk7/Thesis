@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-backup
+  namespace: data
+  annotations:
+    description: "PostgreSQL backup service storing encrypted database snapshots and recovery data"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-backup
+  template:
+    metadata:
+      labels:
+        app: postgres-backup
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: backup
+        image: postgres:15
+        ports:
+        - containerPort: 5432
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: monitoring-role-manager-binding
+  namespace: monitoring
+  annotations:
+    description: "Binds the monitoring role manager to the Prometheus service account"
+subjects:
+- kind: ServiceAccount
+  name: prometheus-sa
+  namespace: monitoring
+roleRef:
+  kind: Role
+  name: monitoring-role-manager
+  apiGroup: rbac.authorization.k8s.io

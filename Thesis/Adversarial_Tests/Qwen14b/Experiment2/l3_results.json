@@ -1,0 +1,64 @@
+{
+  "example_32": {
+    "verdict": "misconfigured",
+    "category": "Overprivileged Role Binding",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml",
+      "target_role.yaml"
+    ],
+    "justification": "The 'monitoring-role-manager' role in the monitoring namespace grants permissions to escalate roles, which is bound to the Prometheus service account. Additionally, there exists a full administrative access role ('monitoring-namespace-admin') that could be escalated by the 'monitoring-role-manager'. This combination allows the Prometheus service account to potentially gain excessive privileges within the monitoring namespace.",
+    "injection_target": "role.yaml"
+  },
+  "example_35": {
+    "verdict": "misconfigured",
+    "category": "Excessive ClusterRole Escalation Permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "target_clusterrole.yaml"
+    ],
+    "justification": "The 'security-audit-escalator' ClusterRole grants the security team group permission to escalate any ClusterRole, including 'cluster-wide-reader'. This could allow the security team to grant themselves excessive permissions beyond what is intended for compliance and observability purposes.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_50": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary Secret Access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment file specifies a service account (whoami-sa) for the whoami application, which is bound to a role that grants read access to secrets in the same namespace. The annotations indicate forward-provisioned access but do not currently require secret access according to the description provided.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_91": {
+    "verdict": "misconfigured",
+    "category": "Excessive RoleBinding Permissions",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'rolebinding-manager' allows the platform-automation-sa service account to bind existing RoleBindings, which includes the ability to modify or create new RoleBindings. Although there is an external OPA Gatekeeper policy mentioned in the annotations that theoretically blocks binding specifically to namespace-admin-binding, this does not negate the potential for abuse of other RoleBindings within the cluster. The combination of these permissions and policies could still lead to unauthorized access escalation if the Gatekeeper policy were bypassed or misconfigured.",
+    "injection_target": "clusterrole.yaml"
+  },
+  "example_103": {
+    "verdict": "misconfigured",
+    "category": "Cluster-wide access instead of namespace-scoped access",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'monitoring-configmap-reader' is intended to grant read-only access to configmaps within the monitoring namespace only. However, it is bound at a cluster-wide scope via the ClusterRoleBinding 'monitoring-configmap-reader-binding'. This means that the 'monitoring-team' group has access to all ConfigMaps in the entire cluster, not just those in the monitoring namespace as originally intended.",
+    "injection_target": "clusterrolebinding.yaml"
+  },
+  "example_109": {
+    "verdict": "misconfigured",
+    "category": "Cluster-wide access instead of namespace-scoped",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'security-serviceaccount-reader' is intended to grant read-only access to service accounts within the security namespace only. However, it is bound at a cluster level via ClusterRoleBinding 'security-serviceaccount-reader-binding', which grants the 'security-audit-team' group cluster-wide access instead of being restricted to the security namespace as originally intended.",
+    "injection_target": "clusterrolebinding.yaml"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "example_53": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The service account 'nginx-sa' is granted read access to configmaps only within the 'webapp' namespace, which aligns with the deployment's annotation stating that no other API access is needed. The RoleBinding correctly binds the Role to the ServiceAccount without granting broader permissions.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_58": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "role.yaml"
+  },
+  "example_65": {
+    "verdict": "misconfigured",
+    "category": "Excessive RBAC permissions for service account",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'fluentd-metadata-reader' grants cluster-wide read-only access to pods and namespaces. This role is bound to the service account 'fluentd-sa' in the 'logging' namespace via a ClusterRoleBinding. While the verbs are read-only, granting cluster-wide access to a single service account may be excessive and could pose a security risk if the service account is compromised.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_73": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_117": {
+    "verdict": "misconfigured",
+    "category": "ClusterRole scope misconfiguration",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'logging-configmap-reader' is cluster-scoped, but the RoleBinding 'logging-configmap-reader-binding' attempts to restrict its access to the 'logging' namespace only. This configuration does not effectively limit the ClusterRole's scope as intended, potentially allowing the 'logging-team' group to access configmaps in any namespace.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_118": {
+    "verdict": "misconfigured",
+    "category": "RBAC misconfiguration",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'cicd-deployment-reader' grants read-only access to deployments across the entire cluster. However, the RoleBinding 'cicd-deployment-reader-binding' attempts to limit this access to the 'cicd' namespace only. This is incorrect because a ClusterRole cannot be restricted to a single namespace by a RoleBinding; it will still grant permissions cluster-wide.",
+    "injection_target": "rolebinding.yaml"
+  }
+}

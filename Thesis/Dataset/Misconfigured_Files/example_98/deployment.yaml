@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: json-exporter
+  namespace: export
+  annotations:
+    description: "Prometheus JSON exporter fetching publicly accessible JSON endpoints only, no credentials or secrets required"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: json-exporter
+  template:
+    metadata:
+      labels:
+        app: json-exporter
+    spec:
+      serviceAccountName: json-exporter-sa
+      containers:
+      - name: json-exporter
+        image: prometheuscommunity/json-exporter:v0.6.0
+        ports:
+        - containerPort: 7979
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"

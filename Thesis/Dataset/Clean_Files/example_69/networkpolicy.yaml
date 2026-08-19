@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: frontend-app-policy
+  namespace: frontend
+  annotations:
+    description: "Restricts frontend app pods to ingress from the load balancer only, with DNS and backend API egress permitted"
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend-app
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: load-balancer
+    ports:
+    - protocol: TCP
+      port: 80
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app: backend-api
+    ports:
+    - protocol: TCP
+      port: 8080
+  - ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53

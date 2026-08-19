@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  namespace: streaming
+  annotations:
+    description: "Apache Kafka message broker for event streaming"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+      component: broker
+  template:
+    metadata:
+      labels:
+        app: kafka
+        component: broker
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: kafka
+        image: bitnami/kafka:3.5.0
+        ports:
+        - containerPort: 9092
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

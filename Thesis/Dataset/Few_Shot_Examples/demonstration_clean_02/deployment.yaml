@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smtp-mailer
+  namespace: notifications
+  annotations:
+    description: "SMTP email service requiring access to smtp-credentials secret for authenticated email delivery"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: smtp-mailer
+  template:
+    metadata:
+      labels:
+        app: smtp-mailer
+    spec:
+      serviceAccountName: smtp-mailer-sa
+      containers:
+      - name: mailer
+        image: python:3.11.0
+        ports:
+        - containerPort: 587
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

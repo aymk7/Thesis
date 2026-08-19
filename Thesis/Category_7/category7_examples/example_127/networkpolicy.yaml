@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mysql-ingress-policy
+  namespace: database
+  annotations:
+    description: "Restricts ingress to mysql pods from the cicd namespace for database migration jobs, but uses namespaceSelector only granting access to all pods in the cicd namespace"
+spec:
+  podSelector:
+    matchLabels:
+      app: mysql
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: cicd
+    ports:
+    - protocol: TCP
+      port: 3306

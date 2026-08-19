@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: postgres-secret-reader-binding
+  namespace: database
+  annotations:
+    description: "Binds secret read access to the postgres service account"
+subjects:
+- kind: ServiceAccount
+  name: postgres-sa
+  namespace: database
+roleRef:
+  kind: Role
+  name: postgres-secret-reader
+  apiGroup: rbac.authorization.k8s.io

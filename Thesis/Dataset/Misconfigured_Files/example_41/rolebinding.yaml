@@ -1,0 +1,15 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: webapp-nginx-secret-reader-binding
+  namespace: webapp
+  annotations:
+    description: "Binds the secret reader role to the nginx service account"
+subjects:
+- kind: ServiceAccount
+  name: webapp-nginx-sa
+  namespace: webapp
+roleRef:
+  kind: Role
+  name: webapp-secret-reader
+  apiGroup: rbac.authorization.k8s.io

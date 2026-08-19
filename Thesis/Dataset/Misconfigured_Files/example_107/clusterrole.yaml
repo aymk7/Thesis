@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: staging-pvc-manager
+  annotations:
+    description: "Intended to grant PVC create and delete access within the staging namespace only for the staging environment provisioner"
+rules:
+- apiGroups: [""]
+  resources: ["persistentvolumeclaims"]
+  verbs: ["get", "list", "create", "delete", "watch"]

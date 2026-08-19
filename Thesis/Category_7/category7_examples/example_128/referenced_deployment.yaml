@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-service
+  namespace: api
+  annotations:
+    description: "API namespace hosts multiple services including public-facing endpoints that receive untrusted external input, granting all API pods access to the billing service means any compromised public API endpoint can directly reach sensitive financial processing"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-service
+  template:
+    metadata:
+      labels:
+        app: api-service
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: api
+        image: node:20-alpine
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

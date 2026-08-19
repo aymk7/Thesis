@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: workflow-sa-impersonator
+  annotations:
+    description: "Allows workflow engine to impersonate service accounts for multi-tenant job execution"
+rules:
+- apiGroups: [""]
+  resources: ["serviceaccounts"]
+  verbs: ["impersonate", "get", "list"]
+- apiGroups: [""]
+  resources: ["serviceaccounts/token"]
+  verbs: ["create"]

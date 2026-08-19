@@ -1,0 +1,57 @@
+{
+  "example_08": {
+    "verdict": "misconfigured",
+    "category": "Unrestricted access to development namespace",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The RoleBinding grants the 'system:unauthenticated' group full exec, log retrieval, and pod metadata access in the development namespace. This allows any unauthenticated user to execute commands inside pods, retrieve logs, and gather information about running pods, which is a significant security risk.",
+    "injection_target": "role.yaml"
+  },
+  "example_11": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The provided manifest files establish a deployment, role, role binding, and service account within the 'webapp' namespace. The Role grants permissions to perform operations on pods, deployments, and services in this namespace for the webapp-nginx-sa ServiceAccount. There are no cross-resource misconfigurations evident from these files alone.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_24": {
+    "verdict": "clean",
+    "category": null,
+    "relevant_files": [],
+    "justification": "The deployment.yaml file does not use a service account token and restricts access to the payment-api pods. The networkpolicy.yaml file further secures these pods by allowing ingress only from api-gateway pods and egress only to postgres pods, without any evident cross-resource misconfigurations.",
+    "injection_target": "deployment.yaml"
+  },
+  "example_33": {
+    "verdict": "misconfigured",
+    "category": "Excessive impersonation permissions for API gateway service account",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-gateway-impersonator' grants the ability to impersonate users and access userextras resources. This role is then bound to the 'api-gateway-sa' ServiceAccount in the 'webapp' namespace, allowing it to perform actions that should be reserved for highly privileged accounts like 'platform-admin'. The combination of these permissions could enable the API gateway service account to escalate its privileges by impersonating users or accessing sensitive user information.",
+    "injection_target": "target_clusterrolebinding.yaml"
+  },
+  "example_47": {
+    "verdict": "misconfigured",
+    "category": "Unnecessary Secret Access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The deployment.yaml file specifies that the graphite-exporter does not require credentials or secrets. However, the role.yaml and rolebinding.yaml files grant read access to all secrets in the redis namespace to the service account associated with the graphite-exporter deployment. This is a security misconfiguration as the application should not have unnecessary permissions to sensitive resources like secrets.",
+    "injection_target": "role.yaml"
+  },
+  "example_108": {
+    "verdict": "misconfigured",
+    "category": "Overly Permissive Cluster Role Binding",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "clusterrolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'api-ingress-manager' grants broad permissions to create, update and manage ingresses across the entire cluster. However, the description suggests it is intended for use within a specific namespace ('api'). The ClusterRoleBinding binds this role to a user without any namespace restrictions, potentially allowing the user to modify ingresses in all namespaces, which exceeds the stated intent.",
+    "injection_target": "clusterrole.yaml"
+  }
+}

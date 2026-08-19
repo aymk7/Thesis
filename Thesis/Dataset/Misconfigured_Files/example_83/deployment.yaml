@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memcached
+  namespace: caching
+  annotations:
+    description: "Memcached in-memory cache for application data"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memcached
+  template:
+    metadata:
+      labels:
+        app: memcached
+    spec:
+      serviceAccountName: memcached-sa
+      containers:
+      - name: memcached
+        image: memcached:1.6.21
+        ports:
+        - containerPort: 11211
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: staging-workload
+  namespace: staging
+  annotations:
+    description: "Staging namespace contains untested pre-release workloads and experimental services that have not completed security review, granting all staging pods access to the production API gateway creates a path from unreviewed code to production systems"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: staging-workload
+  template:
+    metadata:
+      labels:
+        app: staging-workload
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: staging-app
+        image: python:3.11.0
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"

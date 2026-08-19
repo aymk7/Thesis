@@ -1,0 +1,63 @@
+{
+  "example_53": {
+    "verdict": "misconfigured",
+    "category": "over-permissioned RBAC",
+    "relevant_files": [
+      "deployment.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The RoleBinding grants the nginx-sa service account read access to configmaps, but the deployment's annotations suggest that no other API access is needed. This indicates a potential over-permissioning of the RBAC configuration.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_58": {
+    "verdict": "misconfigured",
+    "category": "excessive RBAC permissions",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The Role 'cicd-deployer' grants update/patch permissions on deployments, which is broader than the namespace-scoped Role suggests. This permission is then bound to the 'pipeline-sa' service account via the RoleBinding 'cicd-deployer-binding', potentially allowing excessive control over deployment resources.",
+    "injection_target": "role.yaml"
+  },
+  "example_65": {
+    "verdict": "misconfigured",
+    "category": "over-permissioned ClusterRoleBinding",
+    "relevant_files": [
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'fluentd-metadata-reader' grants read-only access to pods and namespaces cluster-wide. The ClusterRoleBinding 'fluentd-metadata-reader-binding' binds this role to the service account 'fluentd-sa' in the 'logging' namespace, giving it broader permissions than necessary for typical Fluentd workloads.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_73": {
+    "verdict": "misconfigured",
+    "category": "unnecessary secret access",
+    "relevant_files": [
+      "deployment.yaml",
+      "role.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The RoleBinding grants the mysql-sa service account read access to the mysql-credentials secret, which is necessary for the MySQL database. However, the Role itself does not restrict this access to only the specific secret needed by the deployment, allowing potential over-broad access.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_117": {
+    "verdict": "misconfigured",
+    "category": "ClusterRole scope misconfiguration",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'logging-configmap-reader' grants read-only access to configmaps across the entire cluster. However, the RoleBinding 'logging-configmap-reader-binding' attempts to restrict this access to the 'logging' namespace only. Since a ClusterRole is not namespaced, the binding does not actually limit the scope of the ClusterRole's permissions.",
+    "injection_target": "rolebinding.yaml"
+  },
+  "example_118": {
+    "verdict": "misconfigured",
+    "category": "RBAC scope misconfiguration",
+    "relevant_files": [
+      "clusterrole.yaml",
+      "rolebinding.yaml"
+    ],
+    "justification": "The ClusterRole 'cicd-deployment-reader' grants read-only access to deployments cluster-wide, but the RoleBinding 'cicd-deployment-reader-binding' attempts to restrict this access to the 'cicd' namespace only. However, since a ClusterRole is inherently cluster-scoped, the RoleBinding cannot effectively limit its scope to a single namespace.",
+    "injection_target": "rolebinding.yaml"
+  }
+}

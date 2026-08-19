@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-exporter
+  namespace: monitoring
+  annotations:
+    description: "Monitoring namespace contains Prometheus exporters and metrics scrapers including components that scrape arbitrary endpoints, granting all monitoring pods access to Vault is excessive as only the Vault metrics exporter requires it"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-exporter
+  template:
+    metadata:
+      labels:
+        app: prometheus-exporter
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: exporter
+        image: prom/node-exporter:v1.6.0
+        ports:
+        - containerPort: 9100
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
